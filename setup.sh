@@ -1,4 +1,5 @@
 #!/bin/bash
+
 export INSTALL_PREFIX=/usr/local
 export PATH=$PATH:$INSTALL_PREFIX/sbin
 export SOURCE_DIR=$HOME/source
@@ -124,6 +125,7 @@ mkdir -p $SOURCE_DIR/gsa-$GSA_VERSION
 tar -C $SOURCE_DIR/gsa-$GSA_VERSION -xvzf $SOURCE_DIR/gsa-$GSA_VERSION.tar.gz
 sudo mkdir -p $INSTALL_PREFIX/share/gvm/gsad/web/
 sudo cp -rv $SOURCE_DIR/gsa-$GSA_VERSION/* $INSTALL_PREFIX/share/gvm/gsad/web/
+
 export GSAD_VERSION=22.9.0
 sudo apt install -y \
   libmicrohttpd-dev \
@@ -292,12 +294,8 @@ sudo cp -r /tmp/openvas-gnupg/* $OPENVAS_GNUPG_HOME/
 sudo chown -R gvm:gvm $OPENVAS_GNUPG_HOME
 sudo apt install -y postgresql
 sudo systemctl start postgresql@15-main
-sudo -u postgres bash
-cd
-createuser -DRS gvm
-createdb -O gvm gvmd
-psql gvmd -c "create role dba with superuser noinherit; grant dba to gvm;"
-exit
+sudo -u postgres bash -c "cd;createuser -DRS gvm;createdb -O gvm gvmd;psql gvmd -c 'create role dba with superuser noinherit; grant dba to gvm;';exit;"
+
 /usr/local/sbin/gvmd --create-user=admin
 /usr/local/sbin/gvmd --create-user=admin --password='<password>'
 /usr/local/sbin/gvmd --modify-setting 78eceaec-3385-11ea-b237-28d24461215b --value `/usr/local/sbin/gvmd --get-users --verbose | grep admin | awk '{print $2}'`
@@ -365,6 +363,28 @@ TimeoutStopSec=10
 WantedBy=multi-user.target
 EOF
 sudo cp -v $BUILD_DIR/gvmd.service /etc/systemd/system/
+cat << EOF > $BUILD_DIR/gsad.service
+[Unit]
+Description=Greenbone Security Assistant daemon (gsad)
+Documentation=man:gsad(8) https://www.greenbone.net
+After=network.target gvmd.service
+Wants=gvmd.service
+
+[Service]
+Type=exec
+User=gvm
+Group=gvm
+RuntimeDirectory=gsad
+RuntimeDirectoryMode=2775
+PIDFile=/run/gsad/gsad.pid
+ExecStart=/usr/local/sbin/gsad --foreground --listen=0.0.0.0 --port=9392 --http-only
+Restart=always
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
+Alias=greenbone-security-assistant.service
+EOF
 sudo cp -v $BUILD_DIR/gsad.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo /usr/local/bin/greenbone-feed-sync
@@ -379,7 +399,13 @@ sudo systemctl enable gsad
 sudo systemctl status notus-scanner
 sudo systemctl status ospd-openvas
 sudo systemctl status gvmd
-sudo systemctl status gsad
-xdg-open "http://127.0.0.1:9392" 2>/dev/null >/dev/null &
-debugger eval code:16:9
 
+if sudo systemctl status gsad | grep -q "failed"; then
+    sudo apt install git -y
+    cd
+    git clone https://github.com/greenbone/gsad.git
+    cd gsad
+    mkdir build && cd build
+    cmake ..
+    sudo make install
+fi

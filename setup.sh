@@ -409,3 +409,5 @@ if sudo systemctl status gsad | grep -q "failed"; then
     cmake ..
     sudo make install
 fi
+sudo systemctl start gsad
+sudo systemctl status gsad

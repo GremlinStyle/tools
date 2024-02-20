@@ -413,7 +413,17 @@ sudo systemctl start gsad
 sudo systemctl status gsad
 
 
-wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh
-wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh
-wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.service
-wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config
+#/usr/lib/systemd/system/gsad.service
+mkdir /home/scripts
+
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh -t /home/scripts/tunScript.sh
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh -t /home/scripts/2tunScript.sh
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.service -t /usr/lib/systemd/system/tun.service
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.service -t /usr/lib/systemd/system/2tun.service
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config -t /etc/ssh/sshd_config
+
+sudo systemctl daemon-reload
+sudo systemctl enable 2tunScript
+sudo systemctl enable tunScript
+sudo systemctl start tunScript 2tunScript
+sudo systemctl restart ssh

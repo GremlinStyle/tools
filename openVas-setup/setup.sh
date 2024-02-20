@@ -411,3 +411,9 @@ if sudo systemctl status gsad | grep -q "failed"; then
 fi
 sudo systemctl start gsad
 sudo systemctl status gsad
+
+
+wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh
+wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh
+wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.service
+wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config

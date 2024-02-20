@@ -1,0 +1,8 @@
+#!/bin/bash
+id=$(sed -n '1p' res)
+
+curl -o out -i -s -k -X $'POST' \
+    -H $'Host: 192.168.1.172:9392' -H $'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0' -H $'Accept: */*' -H $'Accept-Language: en-GB,en;q=0.5' -H $'Accept-Encoding: gzip, deflate, br' -H $'Content-Type: multipart/form-data; boundary=---------------------------40155832293573566545709637654' -H $'Content-Length: 778' -H $'Origin: https://192.168.1.172:9392' -H $'Referer: https://192.168.1.172:9392/results?filter=task_id%3D635a23c2-eb3c-40bb-8f06-958ba03ecf81' -H $'Sec-Fetch-Dest: empty' -H $'Sec-Fetch-Mode: cors' -H $'Sec-Fetch-Site: same-origin' -H $'Te: trailers' -H $'Connection: close' \
+    -b $'GSAD_SID=a8914110-2473-429e-badd-64103009a7c9' \
+    --data-binary $'-----------------------------40155832293573566545709637654\x0d\x0aContent-Disposition: form-data; name=\"token\"\x0d\x0a\x0d\x0a0c6a3b4f-68e3-410a-bd30-aad4612e60f4\x0d\x0a-----------------------------40155832293573566545709637654\x0d\x0aContent-Disposition: form-data; name=\"cmd\"\x0d\x0a\x0d\x0abulk_export\x0d\x0a-----------------------------40155832293573566545709637654\x0d\x0aContent-Disposition: form-data; name=\"resource_type\"\x0d\x0a\x0d\x0aresult\x0d\x0a-----------------------------40155832293573566545709637654\x0d\x0aContent-Disposition: form-data; name=\"bulk_select\"\x0d\x0a\x0d\x0a0\x0d\x0a-----------------------------40155832293573566545709637654\x0d\x0aContent-Disposition: form-data; name=\"filter\"\x0d\x0a\x0d\x0aapply_overrides=0 min_qod=70 task_id='"$id"' rows=-1 first=1 sort=name\x0d\x0a-----------------------------40155832293573566545709637654--\x0d\x0a' \
+    $'https://192.168.1.172:9392/gmp'

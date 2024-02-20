@@ -1,0 +1,11 @@
+#!/bin/bash
+#in gmail set app password
+sendemail -f adamsperling535@gmail.com \
+    -t gameoverstron2077@gmail.com \
+    -u "Subject of the email" \
+    -m "Body of the email" \
+    -a "res" \
+    -s smtp.gmail.com \
+    -o tls=yes \
+    -xu adamsperling535@gmail.com \
+    -xp "eppj mhgi rhtn kaxo"

@@ -1,0 +1,12 @@
+[Unit]
+Description=SSH Tunnel By Me
+
+[Service]
+ExecStart=/home/kali/adamMADEtunnel/tunScript.sh
+Restart=always
+User=kali
+RestartSec=3
+LimitNOFILE=infinity
+
+[Install]
+WantedBy=default.target

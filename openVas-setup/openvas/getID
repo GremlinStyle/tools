@@ -1,0 +1,1 @@
+gvm-cli --gmp-username admin --gmp-password kali socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v "//task/@id" | uniq > ids

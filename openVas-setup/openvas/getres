@@ -1,0 +1,14 @@
+#!/bin/bash
+file="ids"
+
+# Check if the file exists
+if [ -e "$file" ]; then
+    # Iterate over each line in the file using a for loop
+    cat "$file" | while IFS= read -r line; do
+        echo "$line"
+        # Add any additional actions you want to perform for each line
+	gvm-cli --gmp-username admin --gmp-password kali socket --socketpath /var/run/gvmd/gvmd.sock --xml "<get_results report_id='b1c63743-9699-4bd1-bb8a-fb7d134267ea' filter='apply_overrides=0 min_qod=70 task_id=$line rows=1000 first=1 sort-reverse=severity' />" > $line
+    done
+else
+ echo "file not found"
+fi

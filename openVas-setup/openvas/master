@@ -1,0 +1,69 @@
+#!/bin/bash
+
+#sudo gvm-start
+echo "Sleeping be sure openvas is already running when continueing"
+sleep 180
+sudo chmod 662  /var/run/gvmd/gvmd.sock
+
+getid() { local file=$1; gvm-cli --gmp-username admin --gmp-password kali socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//task/@id' | uniq > "$file"; }
+saverp() { local line=$1; gvm-cli --gmp-username admin --gmp-password kali socket --socketpath /var/run/gvmd/gvmd.sock --xml "<get_results  filter='apply_overrides=0 min_qod=70 task_id=$line rows=1000 first=1 sort-reverse=severity' />" > "$rep/$line"; }
+send() { local file=$1; sendemail -f adamsperling535@gmail.com -t gameoverstron2077@gmail.com -u "Subject of the email" -m "OpenVas report send: bonjur" -a "$file2" -s smtp.gmail.com -o tls=yes -xu adamsperling535@gmail.com -xp "eppj mhgi rhtn kaxo"; }
+
+ss() {
+    local file=$1
+    getid "$file"
+    cat "$file" | (while IFS= read -r line; do
+        echo "$line"
+        saverp "$line"
+        file2="$rep/$line"
+        send "$file2"
+    done)
+}
+
+rep="/home/kali/openScript/rep"
+ids="/home/kali/openScript/ids"
+ids2="/home/kali/openScript/ids2"
+tmpids="/home/kali/openScript/tmpids"
+
+if [ -e $rep ]; then
+echo "rep exist nothing to do"
+else 
+mkdir $rep
+echo "rep created"
+fi
+if [ -e "$ids" ]; then
+	echo "Ids Exist"
+	getid "$ids2"
+    	seconds_in_month="1" #$((30 * 24 * 60 * 60))
+
+	echo "Waiting for a month..."
+	sleep "$seconds_in_month"
+	echo "Done waiting."
+    if ! diff -q "$ids" "$ids2" >/dev/null; then
+        diff  $ids $ids2 | grep ">\|<" | tr -d ">< " > "$tmpids"
+        
+
+        # Your code goes here
+        echo "Executing your code because IDs are different."
+        cat "$tmpids" | (while IFS= read -r line; do
+        echo "$line"
+        saverp "$line"
+        file2="$rep/$line"
+        send "$file2"
+    	done)
+        # Add your code here...
+        
+        rm "$tmpids"
+        # Save "ids2" as "ids"
+        cp "$ids2" "$ids"
+        rm "$ids2"
+    else
+        echo "IDs are the same. No action needed."
+    fi;
+else
+	echo "Ids not there starting firstime(should)"
+	ss "$ids"
+fi
+
+    
+

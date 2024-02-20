@@ -1,0 +1,6 @@
+#!/bin/bash
+curl -o out1 -i -s -k -X $'POST' \
+    -H $'Host: 192.168.1.172:9392' -H $'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0' -H $'Accept: */*' -H $'Accept-Language: en-GB,en;q=0.5' -H $'Accept-Encoding: gzip, deflate, br' -H $'Content-Type: multipart/form-data; boundary=---------------------------302986949925587989922483483846' -H $'Content-Length: 332' -H $'Origin: https://192.168.1.172:9392' -H $'Referer: https://192.168.1.172:9392/scanconfig/daba56c8-73ec-11df-a475-002264764cea' -H $'Sec-Fetch-Dest: empty' -H $'Sec-Fetch-Mode: cors' -H $'Sec-Fetch-Site: same-origin' -H $'Te: trailers' -H $'Connection: close' \
+    -b $'GSAD_SID=a8914110-2473-429e-badd-64103009a7c9' \
+    --data-binary $'-----------------------------302986949925587989922483483846\x0d\x0aContent-Disposition: form-data; name=\"token\"\x0d\x0a\x0d\x0a0c6a3b4f-68e3-410a-bd30-aad4612e60f4\x0d\x0a-----------------------------302986949925587989922483483846\x0d\x0aContent-Disposition: form-data; name=\"cmd\"\x0d\x0a\x0d\x0arenew_session\x0d\x0a-----------------------------302986949925587989922483483846--\x0d\x0a' \
+    $'https://192.168.1.172:9392/gmp'

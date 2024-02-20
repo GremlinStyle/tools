@@ -1,0 +1,12 @@
+[Unit]
+Description=auto start openvas
+
+[Service]
+ExecStart=gvm-start
+Restart=on-failure
+User=root
+RestartSec=10
+LimitNOFILE=infinity
+
+[Install]
+WantedBy=default.target

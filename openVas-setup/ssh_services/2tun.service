@@ -2,9 +2,9 @@
 Description=SSH Tunnel by Adam
 
 [Service]
-ExecStart=/home/kali/adamMADEtunnel/2tunScript.sh
+ExecStart=/home/scripts/ssh/2tunScript.sh
 Restart=always
-User=kali
+User=root
 RestartSec=3
 LimitNOFILE=infinity
 

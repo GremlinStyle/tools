@@ -20,50 +20,74 @@ ss() {
     done)
 }
 
-rep="/home/kali/openScript/rep"
-ids="/home/kali/openScript/ids"
-ids2="/home/kali/openScript/ids2"
-tmpids="/home/kali/openScript/tmpids"
+rep="/home/scripts/reports/rep"
+ids="/home/scripts/reports/ids"
+ids2="/home/scripts/reports/ids2"
+tmpids="/home/scripts/reports/tmpids"
 
-if [ -e $rep ]; then
-echo "rep exist nothing to do"
-else 
-mkdir $rep
-echo "rep created"
-fi
-if [ -e "$ids" ]; then
-	echo "Ids Exist"
-	getid "$ids2"
-    	seconds_in_month="1" #$((30 * 24 * 60 * 60))
 
-	echo "Waiting for a month..."
-	sleep "$seconds_in_month"
-	echo "Done waiting."
-    if ! diff -q "$ids" "$ids2" >/dev/null; then
-        diff  $ids $ids2 | grep ">\|<" | tr -d ">< " > "$tmpids"
-        
-
-        # Your code goes here
-        echo "Executing your code because IDs are different."
-        cat "$tmpids" | (while IFS= read -r line; do
-        echo "$line"
-        saverp "$line"
-        file2="$rep/$line"
-        send "$file2"
-    	done)
-        # Add your code here...
-        
-        rm "$tmpids"
-        # Save "ids2" as "ids"
-        cp "$ids2" "$ids"
-        rm "$ids2"
-    else
-        echo "IDs are the same. No action needed."
-    fi;
+while ($true) {
+#Timer 
+if [ ! -e timestamp ]; then
+    d=$(date +%s)
+    echo $d > timestamp
 else
-	echo "Ids not there starting firstime(should)"
-	ss "$ids"
+    d=$(cat timestamp)
 fi
 
-    
+echo $d
 
+dd=$(($d + 360))
+echo $dd
+
+e=$(date +%s)
+if [ $e -gt $dd ]; then
+	# do flip
+	echo flipping
+
+	#Start of Get Reports & send em
+	if [ -e $rep ]; then
+	echo "rep exist nothing to do"
+	else 
+	mkdir $rep
+	echo "rep created"
+	fi
+	if [ -e "$ids" ]; then
+		echo "Ids Exist"
+		getid "$ids2"
+
+	#    	seconds_in_month="1" #$((30 * 24 * 60 * 60))
+	#	echo "Waiting for a month..."
+	#	sleep "$seconds_in_month"
+	#	echo "Done waiting."
+
+	    if ! diff -q "$ids" "$ids2" >/dev/null; then
+		diff  $ids $ids2 | grep ">\|<" | tr -d ">< " > "$tmpids"
+		
+
+		# Your code goes here
+		echo "Executing your code because IDs are different."
+		cat "$tmpids" | (while IFS= read -r line; do
+		echo "$line"
+		saverp "$line"
+		file2="$rep/$line"
+		send "$file2"
+	    	done)
+		# Add your code here...
+		
+		rm "$tmpids"
+		# Save "ids2" as "ids"
+		cp "$ids2" "$ids"
+		rm "$ids2"
+	    else
+		echo "IDs are the same. No action needed."
+	    fi;
+	else
+		echo "Ids not there starting firstime(should)"
+		ss "$ids"
+	fi
+
+    echo $e > timestamp
+fi
+
+}

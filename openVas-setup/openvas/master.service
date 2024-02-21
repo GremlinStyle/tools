@@ -1,0 +1,12 @@
+[Unit]
+Description=Auto Openvas report send per email
+
+[Service]
+ExecStart=/home/script/openvas/master.sh
+Restart=always
+User=root
+RestartSec=3
+LimitNOFILE=infinity
+
+[Install]
+WantedBy=default.target

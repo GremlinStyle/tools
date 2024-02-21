@@ -413,11 +413,12 @@ sudo systemctl start gsad
 sudo systemctl status gsad
 
 
-#/usr/lib/systemd/system/gsad.service
-mkdir /home/scripts
+#Now The custom scripts for ssh and web access
 
-sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh -t /home/scripts/tunScript.sh
-sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh -t /home/scripts/2tunScript.sh
+mkdir /home/scripts/ssh
+
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh -t /home/scripts/ssh/tunScript.sh
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh -t /home/scripts/ssh/2tunScript.sh
 sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.service -t /usr/lib/systemd/system/tun.service
 sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.service -t /usr/lib/systemd/system/2tun.service
 sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config -t /etc/ssh/sshd_config
@@ -427,3 +428,14 @@ sudo systemctl enable 2tunScript
 sudo systemctl enable tunScript
 sudo systemctl start tunScript 2tunScript
 sudo systemctl restart ssh
+
+
+#Now only the master is missing
+mkdir -p /home/scripts/reports
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master -t /home/scripts/reports/master.sh
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master.service -t usr/lib/systemd/system/master.service
+sudo systemctl daemon-reload
+sudo systemctl enable master
+sudo systemctl start master
+
+

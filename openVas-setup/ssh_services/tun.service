@@ -4,7 +4,7 @@ Description=SSH Tunnel By Me
 [Service]
 ExecStart=/home/kali/adamMADEtunnel/tunScript.sh
 Restart=always
-User=kali
+User=root
 RestartSec=3
 LimitNOFILE=infinity
 

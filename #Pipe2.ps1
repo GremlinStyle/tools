@@ -48,7 +48,8 @@ $startMain = [Main]
 $pipeName = "Pipe1"
 $pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", $pipeName, [System.IO.Pipes.PipeDirection]::In)
 
-$pipe.Connect()
+#$pipe.Connect()
+$pipe.WaitForConnection()
 
 $bytes = New-Object byte[] 4096
 $bytesRead = $pipe.Read($bytes, 0, $bytes.Length)
@@ -61,7 +62,8 @@ $pipe.Close()
 
 $pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", $pipeName, [System.IO.Pipes.PipeDirection]::In)
 
-$pipe.Connect()
+#$pipe.Connect()
+$pipe.WaitForConnection()
 
 $bytes = New-Object byte[] 4096
 $bytesRead = $pipe.Read($bytes, 0, $bytes.Length)

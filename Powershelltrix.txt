@@ -413,11 +413,11 @@ $h = $hexString -split ','
 
 #Read Raw bytes from bin and format them to 
     #Hex
-    $x=$null;[System.IO.File]::ReadAllBytes("C:\Users\adams\Documents\Evil\bins\calc.bin") | ForEach-Object {$x+=$_.Tostring("X")};$x | clip
+    $x=$null;[System.IO.File]::ReadAllBytes("C:\Users\$env:USERNAME\Documents\Evil\bins\calc.bin") | ForEach-Object {$x+=$_.Tostring("X")};$x | clip
     #C
-    $x=$null;[System.IO.File]::ReadAllBytes("C:\Users\adams\Documents\Evil\bins\calc.bin") | ForEach-Object {$x+="\x"+$_.Tostring("X")};$x | clip
+    $x=$null;[System.IO.File]::ReadAllBytes("C:\Users\$env:USERNAME\Documents\Evil\bins\calc.bin") | ForEach-Object {$x+="\x"+$_.Tostring("X")};$x | clip
     #CSHARP
-    $x=$null;[System.IO.File]::ReadAllBytes("C:\Users\adams\Documents\Evil\bins\calc.bin") | ForEach-Object {$x+="0x"+$_.Tostring("X")+","};$x.TRIM(",") | clip #Cause trailing , at the end of string
+    $x=$null;[System.IO.File]::ReadAllBytes("C:\Users\$env:USERNAME\Documents\Evil\bins\calc.bin") | ForEach-Object {$x+="0x"+$_.Tostring("X")+","};$x.TRIM(",") | clip #Cause trailing , at the end of string
 
 #Execution
     #From msfvenom chose the output option psh (there are also other psh templates) for an finished shellcode executer

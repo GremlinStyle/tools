@@ -2,7 +2,7 @@
 Description=SSH Tunnel By Me
 
 [Service]
-ExecStart=/home/scripts/ssh/tunScript.sh
+ExecStart=$scriptspath$/ssh/usedby_ssh_tunnel.sh
 Restart=always
 User=root
 RestartSec=3

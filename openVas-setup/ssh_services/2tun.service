@@ -2,7 +2,7 @@
 Description=SSH Tunnel by Adam
 
 [Service]
-ExecStart=/home/scripts/ssh/2tunScript.sh
+ExecStart=$scriptspath$/ssh/usedby_openVasgui_tunnel.sh
 Restart=always
 User=root
 RestartSec=3

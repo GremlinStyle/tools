@@ -1,4 +1,6 @@
 #!/bin/bash
+user=$1
+pasdw=$2
 
 export INSTALL_PREFIX=/usr/local
 export PATH=$PATH:$INSTALL_PREFIX/sbin
@@ -296,10 +298,7 @@ sudo apt install -y postgresql
 sudo systemctl start postgresql@15-main
 sudo -u postgres bash -c "cd;createuser -DRS gvm;createdb -O gvm gvmd;psql gvmd -c 'create role dba with superuser noinherit; grant dba to gvm;';exit;"
 
-echo "\nPlease name the admin user"
-read user
-echo "\nPlease type the password"
-read pasdw
-/usr/local/sbin/gvmd --create-user=$user
-/usr/local/sbin/gvmd --create-user=admin --password=$pasdw
-/usr/local/sbin/gvmd --modify-setting 78eceaec-3385-11ea-b237-28d24461215b --value `/usr/local/sbin/gvmd --get-users --verbose | grep $user | awk '{print $2}'`
+
+/usr/local/sbin/gvmd --create-user="$user"
+/usr/local/sbin/gvmd --create-user=admin --password="$pasdw"
+/usr/local/sbin/gvmd --modify-setting 78eceaec-3385-11ea-b237-28d24461215b --value `/usr/local/sbin/gvmd --get-users --verbose | grep "$user" | awk '{print $2}'`

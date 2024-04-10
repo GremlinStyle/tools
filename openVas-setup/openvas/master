@@ -1,5 +1,6 @@
 #!/bin/bash
 
+scripts=$1
 #sudo gvm-start
 echo "Sleeping be sure openvas is already running when continueing"
 sleep 180
@@ -20,10 +21,10 @@ ss() {
     done)
 }
 
-rep="/home/scripts/reports/rep"
-ids="/home/scripts/reports/ids"
-ids2="/home/scripts/reports/ids2"
-tmpids="/home/scripts/reports/tmpids"
+rep=$scripts"/reports/rep"
+ids=$scripts"/reports/ids"
+ids2=$scripts"/reports/ids2"
+tmpids=$scripts"/reports/tmpids"
 
 
 while ($true) {

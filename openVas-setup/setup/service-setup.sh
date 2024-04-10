@@ -1,3 +1,7 @@
+script=$1
+sshcon=$2
+keypath=$3
+
 sudo cat << EOF > /etc/systemd/system/ospd-openvas.service
 [Unit]
 Description=OSPd Wrapper for the OpenVAS Scanner (ospd-openvas)
@@ -115,8 +119,7 @@ sudo systemctl status gsad
 
 #Now The custom scripts for ssh and web access
 
-echo "Please enter the path where the scripts should be saved\n Entered Path should NOT END WITH / \n recommended: /home/scripts"
-read script
+
 
 #Create path
 mkdir -p $script/ssh && echo "scripts are saved in $script"
@@ -125,10 +128,7 @@ toreplacecon="\$sshconection\$"
 toreplacepath="\$keypath\$"
 toreplacescriptpath="\$scriptspath\$"
 
-echo "\n Please enter a valid ssh connection: "
-read sshcon
-echo "\n Please enter a valid ssh-key path: "
-read keypath
+
 
 ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh)
 wcontent="${ccontent/$toreplacecon/$sshcon}"
@@ -155,13 +155,13 @@ sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setu
 sudo systemctl daemon-reload
 sudo systemctl enable by_ssh_tunnel
 sudo systemctl enable openVasgui_tunnel
-sudo systemctl start tunScript 2tunScript
+sudo systemctl start openVasgui_tunnel by_ssh_tunnel
 sudo systemctl restart ssh
 
 
 #Now only the master is missing
-mkdir -p /home/scripts/reports
-sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master -t /home/scripts/reports/master.sh
+mkdir -p $script/reports
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master -t $script/reports/master.sh
 sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master.service -t usr/lib/systemd/system/master.service
 sudo systemctl daemon-reload
 sudo systemctl enable master

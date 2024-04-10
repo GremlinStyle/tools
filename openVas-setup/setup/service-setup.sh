@@ -123,28 +123,38 @@ mkdir -p $script/ssh && echo "scripts are saved in $script"
 
 toreplacecon="\$sshconection\$"
 toreplacepath="\$keypath\$"
+toreplacescriptpath="\$scriptspath\$"
 
 echo "\n Please enter a valid ssh connection: "
 read sshcon
 echo "\n Please enter a valid ssh-key path: "
 read keypath
+
 ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh)
 wcontent="${ccontent/$toreplacecon/$sshcon}"
 wwcontent="${wcontent/$toreplacepath/$keypath}"
-echo wwcontent > $script/ssh/usedby_openVasgui_tunnel.sh
+echo $wwcontent > $script/ssh/usedby_openVasgui_tunnel.sh
 
 ccontent=$(curlhttps://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh)
 wcontent="${ccontent/$toreplacecon/$sshcon}"
-wwcontent="${wcontent/$toreplacepath/$keypath}"
-echo wwcontent > $script/ssh/usedby_ssh_tunnel.sh
+wwcontent="${wcontent/$toreplacescriptpath/$keypath}"
+echo $wwcontent > $script/ssh/usedby_ssh_tunnel.sh
 
-ccontent=$(https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.service) -t /usr/lib/systemd/system/tun.service
-sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.service -t /usr/lib/systemd/system/2tun.service
+
+ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tun.service)
+wcontent="${ccontent/$toreplacecon/$script}"
+echo $wcontent > /usr/lib/systemd/system/by_openVasgui_tunnel.service
+
+ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tun.service)
+wcontent="${ccontent/$toreplacecon/$script}"
+sudo echo $wcontent > /usr/lib/systemd/system/by_ssh_tunnel.service
+
+
 sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config -t /etc/ssh/sshd_config
 
 sudo systemctl daemon-reload
-sudo systemctl enable 2tunScript
-sudo systemctl enable tunScript
+sudo systemctl enable by_ssh_tunnel
+sudo systemctl enable openVasgui_tunnel
 sudo systemctl start tunScript 2tunScript
 sudo systemctl restart ssh
 

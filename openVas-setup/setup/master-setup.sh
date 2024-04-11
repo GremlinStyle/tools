@@ -2,7 +2,7 @@
 
 #for getting the scripts
 sudo apt update
-sudo apt install curl
+sudo apt install curl -y
 
 echo "Please enter the path where the scripts should be saved\n Entered Path should NOT END WITH / \n recommended: /home/scripts"
 read script

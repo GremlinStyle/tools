@@ -5,49 +5,63 @@ sudo apt update
 sudo apt install curl xmlstarlet sendmail -y
 
 SCRIPTPATH=/root/scripts
-keypath=root/.ssh/id_rsa
+KEYPATH=root/.ssh/id_rsa
+
+#START OF SET-VARIBLE 
+
+#SSH CONFIG
 
 printf "\n Please enter a valid ssh connection: "
-read sshcon
+read SSHCON
 
-printf "Please just hit Enter for the ssh-key generation"
+printf "Please just hit Enter for the ssh-key generation: "
 
 ssh-keygen -t rsa
 
-printf "\n STOP PAY ATTENTION AGAIN "
-read
+printf "\n STOP!!!\n PAY ATTENTION AGAIN \n"
+sleep 2
 
-printf "\nPlease name the admin user of openVas"
-read user
-printf "\nPlease type the password of the admin user from openVas"
-read pasdw
-printf "\nPlease type the email used to send reports"
-read fromail
-printf "\nPlease type the Appkey of the email you use to send reports"
-read fromail
-printf "\nPlease type the email used to receive reports"
-read tomail
+printf "now we gona use ssh-copy-id to put the key onto the server for that you need to just enter the password: "
+
+ssh-copy-id $SSHCON
+
+#OPENVAS / GVM CONFIG
+
+printf "\nPlease name the admin user of openVas: "
+read GVMUSER
+printf "\nPlease type the password of the admin user from openVas: "
+read GVMPASDW
+
+#EMAIL CONFIG
+
+printf "\nPlease type the email used to send reports: "
+read FROMAIL
+printf "\nPlease type the Appkey of the email you use to send reports: "
+read APPKEY
+printf "\nPlease type the email used to receive reports: "
+read TOMAIL
+
 
 mkdir -p /root/scripts
 chmod 700 /root/scripts
 export SCRIPTPATH=/root/scripts
-export SSHCON=$sshcon
+export SSHCON=$SSHCON
 export KEYPATH=/root/.ssh/id_rsa
-export GVMUSER=$user
-export GVMPASDW=$pasdw
-export APPKEY=$appkey
-export TOMAIL=$tomail
-export FROMAIL=$fromail
+export GVMUSER=$GVMUSER
+export GVMPASDW=$GVMPASDW
+export APPKEY=$APPKEY
+export TOMAIL=$TOMAIL
+export FROMAIL=$FROMAIL
 
-#printf "export SCRIPTPATH="$scriptpath"\nexport KEYPATH="$keypath"\nexport GVMUSER="$user"\nexport GVMPASDW="$pasdw"\nexport SSHCON="$sshcon"\nexport APPKEY="$appkey"\nexport TOMAIL="$tomail"\nexport FROMAIL=$fromail >> $HOME/.profile
-sudo printf "export SCRIPTPATH="$scriptpath"\nexport KEYPATH="$keypath"\nexport GVMUSER="$user"\nexport GVMPASDW="$pasdw"\nexport SSHCON="$sshcon >> /root/.profile
+sudo printf "export SCRIPTPATH="$SCRIPTPATH"\nexport KEYPATH="$KEYPATH"\nexport GVMUSER="$GVMUSER"\nexport GVMPASDW="$GVMPASDW"\nexport SSHCON="$SSHCON"\nexport APPKEY="$APPKEY"\nexport TOMAIL="$TOMAIL"\nexport FROMAIL=$FROMAIL >> $HOME/.profile
+#sudo printf "export SCRIPTPATH="$SCRIPTPATH"\nexport KEYPATH="$KEYPATH"\nexport GVMUSER="$user"\nexport GVMPASDW="$pasdw"\nexport SSHCON="$sshcon >> /root/.profile
 
 
 #START OF INSTALLATION
 # of openvas for debian according to ("https://greenbone.github.io/docs/latest/22.4/source-build/index.html") with changes for prompted user and password
 
 if hostnamectl | grep -qiP 'system.*[kK]ali'; then
-    echo -e "OS is Kali Linux\npossible installation using apt install\n it is recommended:(y/n)"
+    echo -e "OS is Kali Linux\npossible installation using apt install\n it is recommended:(y/n) "
     read answ
     if [ "$ans" = "y" ]; then
         echo "I shall continue on a righteus path"

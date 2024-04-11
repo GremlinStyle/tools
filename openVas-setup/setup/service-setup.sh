@@ -111,6 +111,7 @@ if sudo systemctl status gsad | grep -q "failed"; then
     cmake ..
     sudo make install
 fi
+cd ~
 sudo systemctl start gsad
 sudo systemctl status gsad
 
@@ -122,30 +123,37 @@ sudo systemctl status gsad
 #Create path
 mkdir -p $SCRIPTPATH/ssh && echo "scripts are saved in $SCRIPTPATH"
 
+#Varibles for replacment
 toreplacecon="\$SSHCONection\$"
-toreplacepath="\$keypath\$"
+toreplacekeypath="\$keypath\$"
 toreplacescriptpath="\$scriptspath\$"
 
 
-
+#get content from file {tunScript.sh}
 ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh)
+
+#replace $ toreplacecon with $SSHCON
 wcontent="${ccontent/$toreplacecon/$SSHCON}"
-wwcontent="${wcontent/$toreplacepath/$KEYPATH}"
-echo $wwcontent > $SCRIPTPATH/ssh/usedby_openVasgui_tunnel.sh
+
+#replace toreplacekeypath with KEYPATH
+wwcontent="${wcontent/$toreplacekeypath/$KEYPATH}"
+
+#write it to file
+echo -n "$wwcontent" > $SCRIPTPATH/ssh/usedby_openVasgui_tunnel.sh
 
 ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh)
 wcontent="${ccontent/$toreplacecon/$SSHCON}"
-wwcontent="${wcontent/$toreplacepath/$KEYPATH}"
+wwcontent="${wcontent/$toreplacekeypath/$KEYPATH}"
 echo $wwcontent > $SCRIPTPATH/ssh/usedby_ssh_tunnel.sh
 
 
 curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tun.service -o /tmp/temp.file
 sed -i 's|\$scriptspath\$|\'"$SCRIPTPATH"'|' /tmp/temp.file
-cp /tmp/temp.file /usr/lib/systemd/system/by_openVasgui_tunnel.service
+sudo cp /tmp/temp.file /usr/lib/systemd/system/by_openVasgui_tunnel.service
 
 curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tun.service -o /tmp/temp.file
 sed -i 's|\$scriptspath\$|\'"$SCRIPTPATH"'|' /tmp/temp.file
-cp /tmp/temp.file /usr/lib/systemd/system/by_ssh_tunnel.service
+sudo cp /tmp/temp.file /usr/lib/systemd/system/by_ssh_tunnel.service
 
 rm /tmp/temp.file
 

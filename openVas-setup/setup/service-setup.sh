@@ -135,19 +135,19 @@ wcontent="${ccontent/$toreplacecon/$sshcon}"
 wwcontent="${wcontent/$toreplacepath/$keypath}"
 echo $wwcontent > $script/ssh/usedby_openVasgui_tunnel.sh
 
-ccontent=$(curlhttps://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh)
+ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh)
 wcontent="${ccontent/$toreplacecon/$sshcon}"
-wwcontent="${wcontent/$toreplacescriptpath/$keypath}"
+wwcontent="${wcontent/$toreplacepath/$keypath}"
 echo $wwcontent > $script/ssh/usedby_ssh_tunnel.sh
 
 
-ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tun.service)
-wcontent="${ccontent/$toreplacecon/$script}"
-echo $wcontent > /usr/lib/systemd/system/by_openVasgui_tunnel.service
+curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tun.service -o /tmp/temp.file
+sed -i 's|\$scriptspath\$|\'"$script"'|' /tmp/temp.file
+cp /tmp/temp.file /usr/lib/systemd/system/by_openVasgui_tunnel.service
 
-ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tun.service)
-wcontent="${ccontent/$toreplacecon/$script}"
-sudo echo $wcontent > /usr/lib/systemd/system/by_ssh_tunnel.service
+curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tun.service -o /tmp/temp.file
+sed -i 's|\$scriptspath\$|\'"$script"'|' /tmp/temp.file
+cp /tmp/temp.file /usr/lib/systemd/system/by_ssh_tunnel.service
 
 
 sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config -t /etc/ssh/sshd_config
@@ -162,7 +162,9 @@ sudo systemctl restart ssh
 #Now only the master is missing
 mkdir -p $script/reports
 sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master -t $script/reports/master.sh
-sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master.service -t usr/lib/systemd/system/master.service
+curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master.service -o /tmp/temp.file
+sed -i 's|\$scriptspath\$|\'"$script"'|' /tmp/temp.file
+cp /tmp/temp.file usr/lib/systemd/system/master.service
 sudo systemctl daemon-reload
 sudo systemctl enable master
 sudo systemctl start master

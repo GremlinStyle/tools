@@ -16,16 +16,18 @@ echo "\nPlease type the password of the admin user from openVas"
 read pasdw
 
  
+#START OF INSTALLATION
+# of openvas for debian according to ("https://greenbone.github.io/docs/latest/22.4/source-build/index.html") with changes for prompted user and password
 
 #Creating user for next steps
 sudo bash <(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/pre-setup.sh) 
-
-
 
 #Start installation of openvas (Debian) source: https://greenbone.github.io/docs/latest/22.4/source-build/index.html
 #PS: Followning script (install-setup.sh) is just copy pasted from source
 sudo bash <(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/install-setup.sh) $user $pasdw
 
-#Create Services
+#END OF INSTALLATION
+
+#Create Services and configure them
 #IMPORTANT 
 sudo bash <(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/service-setup.sh) $script $sshcon $keypath

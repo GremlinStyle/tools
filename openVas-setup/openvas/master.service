@@ -2,7 +2,7 @@
 Description=Auto Openvas report send per email
 
 [Service]
-ExecStart=/home/script/openvas/master.sh
+ExecStart=$scriptpath$/openvas/master.sh
 Restart=always
 User=root
 RestartSec=3

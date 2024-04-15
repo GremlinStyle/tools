@@ -18,7 +18,7 @@ echo -e "Please save the ssh keyfile of the main server first on disk before pro
 
 read check
 
-if [ $check == Y ]; then echo "We will procced"; else echo "then please get the keyfile to disk";return; fi; echo "Lol"
+if [ $check == Y ]; then echo "We will procced"; else echo "then please get the keyfile to disk";exit; fi; echo "Lol"
 
 printf "\n Please enter a valid ssh connection (user@ipORdns): "
 read SSHCON

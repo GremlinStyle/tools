@@ -88,7 +88,7 @@ sudo echo -e "export SCRIPTPATH=$SCRIPTPATH\nexport GVMUSER=$GVMUSER\nexport GVM
 
 if hostnamectl | grep -qiP 'system.*[kK]ali'; then
     echo -e "OS is Kali Linux\npossible installation using apt install\n it is recommended:(y/n) "
-    read answ
+    read ans
     if [ "$ans" == "y" ]; then
         echo "I shall continue on a righteus path"
         sudo apt install openvas -y --fix-missing
@@ -101,7 +101,7 @@ if hostnamectl | grep -qiP 'system.*[kK]ali'; then
     
 elif hostnamectl | grep -qiP 'system.*[dD]ebian'; then
     echo -e "OS is Debian Linux\nonly possible installation using source and build to install\n it is a hasle but that's why this script exist\n do you want to install:(y/n)"
-    read answ
+    read ans
     if [ $ans == y ]; then
         echo "I shall continue on this treacherous path"
             #Creating user for next steps

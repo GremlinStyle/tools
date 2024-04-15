@@ -62,14 +62,9 @@ read TOMAIL
 
 mkdir -p /root/scripts
 chmod 700 /root/scripts
-export SCRIPTPATH=/root/scripts
 export SSHCON=$SSHCON
 export PORT1=$PORT1
 export PORT2=$PORT2
-
-#Keypath not needed cause already have key copied
-#export KEYPATH=/root/.ssh/id_rsa
-
 export GVMUSER=$GVMUSER
 export GVMPASWD=$GVMPASWD
 export APPKEY=$APPKEY
@@ -78,9 +73,9 @@ export FROMAIL=$FROMAIL
 
 
 if [ $SHELL -eq "/bin/bash" ]; then
-sudo echo -e "\nexport SCRIPTPATH=$SCRIPTPATH\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.bashrc
+sudo echo -e "\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.bashrc
 elif [ $SHELL -eq "/usr/bin/zsh" ]; then
-sudo echo -e "\nexport SCRIPTPATH=$SCRIPTPATH\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.zshrc
+sudo echo -e "\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.zshrc
 else
 echo "Unknown Shell"
 return

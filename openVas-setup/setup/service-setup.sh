@@ -151,44 +151,25 @@ fi
 
 
 #Create path
-mkdir -p $SCRIPTPATH/ssh && echo "scripts are saved in $SCRIPTPATH"
+mkdir -p /root/scripts/ssh && echo "scripts are saved in $SCRIPTPATH"
 
-#Varibles for replacment
-toreplacecon="\$sshconection\$"
-toreplacekeypath="\$PORT\$"
-toreplacescriptpath="\$scriptspath\$"
+curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh -o /root/scripts/ssh/usedby_openVasgui_tunnel.sh
 
-
-#get content from file {tunScript.sh}
-ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh)
-wcontent="${ccontent/$toreplacecon/$SSHCON}"
-wwcontent="${wcontent/$toreplacekeypath/$PORT1}"
-echo -e "$wwcontent" > $SCRIPTPATH/ssh/usedby_openVasgui_tunnel.sh
-
-ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh)
-wcontent="${ccontent/$toreplacecon/$SSHCON}"
-wwcontent="${wcontent/$toreplacekeypath/$PORT2}"
-echo -e "$wwcontent" > $SCRIPTPATH/ssh/usedby_ssh_tunnel.sh
+curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh -o /root/scripts/ssh/usedby_ssh_tunnel.sh
 
 
-curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tun.service -o /tmp/temp.file
-sed -i 's|\$scriptspath\$|\'"$SCRIPTPATH"'|' /tmp/temp.file
-sudo cp /tmp/temp.file /usr/lib/systemd/system/by_openVasgui_tunnel.service
+curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tun.service -o /usr/lib/systemd/system/by_openVasgui_tunnel.service
 
-curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tun.service -o /tmp/temp.file
-sed -i 's|\$scriptspath\$|\'"$SCRIPTPATH"'|' /tmp/temp.file
-sudo cp /tmp/temp.file /usr/lib/systemd/system/by_ssh_tunnel.service
+curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tun.service -o /usr/lib/systemd/system/by_ssh_tunnel.service
 
-rm /tmp/temp.file
 
 sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config_rasp -t /etc/ssh/sshd_config
 
 #Now only the master is missing
-mkdir -p $SCRIPTPATH/reports
-sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master -t $SCRIPTPATH/master.sh
-curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master.service -o /tmp/temp.file
-sed -i 's|\$scriptspath\$|\'"$SCRIPTPATH"'|' /tmp/temp.file
-cp /tmp/temp.file /usr/lib/systemd/system/master.service
+mkdir -p /root/scripts/reports
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master -t /root/scripts/master.sh
+
+curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master.service -o /usr/lib/systemd/system/master.service
 
 sudo systemctl daemon-reload
 sudo systemctl restart ssh

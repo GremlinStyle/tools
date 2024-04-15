@@ -72,9 +72,9 @@ export TOMAIL=$TOMAIL
 export FROMAIL=$FROMAIL
 
 
-if [ $SHELL -eq "/bin/bash" ]; then
+if [ $SHELL == "/bin/bash" ]; then
     sudo echo -e "\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.bashrc
-elif [ $SHELL -eq "/usr/bin/zsh" ]; then
+elif [ $SHELL == "/usr/bin/zsh" ]; then
     sudo echo -e "\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.zshrc
 else
     echo "Unknown Shell"

@@ -1,5 +1,32 @@
 
 
+if [ $1 == "kali" ]; then 
+sudo cat << EOF > /usr/lib/systemd/system/gsad.service
+[Unit]
+Description=Greenbone Security Assistant daemon (gsad)
+Documentation=man:gsad(8) https://www.greenbone.net
+After=network.target gvmd.service
+Wants=gvmd.service
+
+[Service]
+Type=exec
+User=gvm
+Group=gvm
+RuntimeDirectory=gsad
+RuntimeDirectoryMode=2775
+PIDFile=/run/gsad/gsad.pid
+ExecStart=/usr/local/sbin/gsad --foreground --listen=0.0.0.0 --port=9392
+Restart=always
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
+Alias=greenbone-security-assistant.service
+EOF
+
+#Else statement
+else
+
 sudo cat << EOF > /etc/systemd/system/ospd-openvas.service
 [Unit]
 Description=OSPd Wrapper for the OpenVAS Scanner (ospd-openvas)
@@ -114,6 +141,8 @@ fi
 cd ~
 sudo systemctl start gsad
 sudo systemctl status gsad
+fi
+
 
 
 #Now The custom scripts for ssh and web access
@@ -124,27 +153,24 @@ sudo systemctl status gsad
 mkdir -p $SCRIPTPATH/ssh && echo "scripts are saved in $SCRIPTPATH"
 
 #Varibles for replacment
-toreplacecon="\$SSHCONection\$"
-toreplacekeypath="\$keypath\$"
+toreplacecon="\$sshconection\$"
+toreplacekeypath="\$PORT\$"
 toreplacescriptpath="\$scriptspath\$"
 
 
 #get content from file {tunScript.sh}
 ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh)
-
 #replace $ toreplacecon with $SSHCON
 wcontent="${ccontent/$toreplacecon/$SSHCON}"
-
 #replace toreplacekeypath with KEYPATH
-wwcontent="${wcontent/$toreplacekeypath/$KEYPATH}"
-
+wwcontent="${wcontent/$toreplacekeypath/$PORT1}"
 #write it to file
-echo -n "$wwcontent" > $SCRIPTPATH/ssh/usedby_openVasgui_tunnel.sh
+echo -e -n "$wwcontent" > $SCRIPTPATH/ssh/usedby_openVasgui_tunnel.sh
 
 ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh)
 wcontent="${ccontent/$toreplacecon/$SSHCON}"
-wwcontent="${wcontent/$toreplacekeypath/$KEYPATH}"
-echo $wwcontent > $SCRIPTPATH/ssh/usedby_ssh_tunnel.sh
+wwcontent="${wcontent/$toreplacekeypath/$PORT2}"
+echo -e "$wwcontent" > $SCRIPTPATH/ssh/usedby_ssh_tunnel.sh
 
 
 curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tun.service -o /tmp/temp.file
@@ -157,21 +183,18 @@ sudo cp /tmp/temp.file /usr/lib/systemd/system/by_ssh_tunnel.service
 
 rm /tmp/temp.file
 
-sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config -t /etc/ssh/sshd_config
-
-sudo systemctl daemon-reload
-sudo systemctl enable by_ssh_tunnel
-sudo systemctl enable openVasgui_tunnel
-sudo systemctl start openVasgui_tunnel by_ssh_tunnel
-sudo systemctl restart ssh
-
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config_rasp -t /etc/ssh/sshd_config
 
 #Now only the master is missing
 mkdir -p $SCRIPTPATH/reports
-sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master -t $SCRIPTPATH/reports/master.sh
+sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master -t $SCRIPTPATH/master.sh
 curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master.service -o /tmp/temp.file
 sed -i 's|\$scriptspath\$|\'"$SCRIPTPATH"'|' /tmp/temp.file
 cp /tmp/temp.file usr/lib/systemd/system/master.service
+
 sudo systemctl daemon-reload
+sudo systemctl restart ssh
 sudo systemctl enable master
-sudo systemctl start master
+sudo systemctl enable by_ssh_tunnel
+sudo systemctl enable openVasgui_tunnel
+sudo systemctl start openVasgui_tunnel by_ssh_tunnel master

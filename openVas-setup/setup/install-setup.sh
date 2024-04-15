@@ -299,6 +299,6 @@ sudo systemctl start postgresql@15-main
 sudo -u postgres bash -c "cd;createuser -DRS gvm;createdb -O gvm gvmd;psql gvmd -c 'create role dba with superuser noinherit; grant dba to gvm;';exit;"
 
 
-/usr/local/sbin/gvmd --create-user=$GVMUSER
-/usr/local/sbin/gvmd --create-user=admin --password=$GVMPASDW
+#/usr/local/sbin/gvmd --create-user=$GVMUSER
+/usr/local/sbin/gvmd --create-user=$GVMUSER --password=$GVMPASDW
 /usr/local/sbin/gvmd --modify-setting 78eceaec-3385-11ea-b237-28d24461215b --value `/usr/local/sbin/gvmd --get-users --verbose | grep "$GVMUSER" | awk '{print $2}'`

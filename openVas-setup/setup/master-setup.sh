@@ -87,16 +87,13 @@ sudo echo -e "export SCRIPTPATH=$SCRIPTPATH\nexport GVMUSER=$GVMUSER\nexport GVM
 # of openvas for debian according to ("https://greenbone.github.io/docs/latest/22.4/source-build/index.html") with changes for prompted user and password
 
 if hostnamectl | grep -qiP 'system.*[kK]ali'; then
-    echo -e "OS is Kali Linux\npossible installation using apt install\n it is recommended:(y/n) "
-    read ans
-    if [ "$ans" == "y" ]; then
-        echo "I shall continue on a righteus path"
-        sudo apt install openvas -y --fix-missing
-        sudo gvm-setup
-        sudo -E -u _gvm -g _gvm gvmd --delete-user=admin
-        sudo -E -u _gvm -g _gvm gvmd --create-user=$GVMUSER --password=$GVMPASDW
-        sudo bash <(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/service-setup.sh) "kali"
-    fi
+    echo -e "OS is Kali Linux\npossible installation using apt install\nand we will do it "
+    echo "I shall continue on a righteus path"
+    sudo apt install openvas -y --fix-missing
+    sudo gvm-setup
+    sudo -E -u _gvm -g _gvm gvmd --delete-user=admin
+    sudo -E -u _gvm -g _gvm gvmd --create-user=$GVMUSER --password=$GVMPASDW
+    sudo bash <(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/service-setup.sh) "kali"
 
     
 elif hostnamectl | grep -qiP 'system.*[dD]ebian'; then

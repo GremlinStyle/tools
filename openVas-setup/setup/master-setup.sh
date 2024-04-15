@@ -89,3 +89,6 @@ fi
 
 #IMPORTANT 
 sudo bash <(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/service-setup.sh) $scriptpath $sshcon $keypath
+
+echo -e "\n And for the last step change the password"
+passwd

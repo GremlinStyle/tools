@@ -64,8 +64,8 @@ mkdir -p /root/scripts
 chmod 700 /root/scripts
 export SCRIPTPATH=/root/scripts
 export SSHCON=$SSHCON
-export PORT1=PORT1
-export PORT2=PORT2
+export PORT1=$PORT1
+export PORT2=$PORT2
 
 #Keypath not needed cause already have key copied
 #export KEYPATH=/root/.ssh/id_rsa
@@ -77,10 +77,17 @@ export TOMAIL=$TOMAIL
 export FROMAIL=$FROMAIL
 
 
-sudo echo -e "export SCRIPTPATH=$SCRIPTPATH\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=$APPKEY\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.profile
+if [ $SHELL -eq "/bin/bash" ]; then
+sudo echo -e "\nexport SCRIPTPATH=$SCRIPTPATH\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.bashrc
+elif [ $SHELL -eq "/usr/bin/zsh" ]; then
+sudo echo -e "\nexport SCRIPTPATH=$SCRIPTPATH\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.zshrc
+else
+echo "Unknown Shell"
+return
+
+
 #Without Keypath
-#sudo printf "export SCRIPTPATH="$SCRIPTPATH"\nexport KEYPATH="$KEYPATH"\nexport GVMUSER="$GVMUSER"\nexport GVMPASWD="$GVMPASWD"\nexport SSHCON="$SSHCON"\nexport APPKEY="$APPKEY"\nexport TOMAIL="$TOMAIL"\nexport FROMAIL=$FROMAIL >> $HOME/.profile
-#sudo printf "export SCRIPTPATH="$SCRIPTPATH"\nexport KEYPATH="$KEYPATH"\nexport GVMUSER="$user"\nexport GVMPASWD="$pasdw"\nexport SSHCON="$sshcon >> /root/.profile
+#sudo printf "export SCRIPTPATH="$SCRIPTPATH"\nexport KEYPATH="$KEYPATH"\nexport GVMUSER="$GVMUSER"\nexport GVMPASWD="$GVMPASWD"\nexport SSHCON="$SSHCON"\nexport APPKEY="$APPKEY"\nexport TOMAIL="$TOMAIL"\nexport FROMAIL=$FROMAIL >> $HOME/.bashrc
 
 
 #START OF INSTALLATION
@@ -93,7 +100,8 @@ if hostnamectl | grep -qiP 'system.*[kK]ali'; then
     sudo gvm-setup
     sudo -E -u _gvm -g _gvm gvmd --delete-user=admin
     sudo -E -u _gvm -g _gvm gvmd --create-user=$GVMUSER --password=$GVMPASWD
-    sudo bash <(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/service-setup.sh) "kali"
+    curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/service-setup.sh -o service-setup.sh
+    sudo bash service-setup.sh "kali"
 
     
 elif hostnamectl | grep -qiP 'system.*[dD]ebian'; then

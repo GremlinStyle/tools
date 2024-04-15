@@ -161,12 +161,9 @@ toreplacescriptpath="\$scriptspath\$"
 
 #get content from file {tunScript.sh}
 ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh)
-#replace $ toreplacecon with $SSHCON
 wcontent="${ccontent/$toreplacecon/$SSHCON}"
-#replace toreplacekeypath with KEYPATH
 wwcontent="${wcontent/$toreplacekeypath/$PORT1}"
-#write it to file
-echo -e -n "$wwcontent" > $SCRIPTPATH/ssh/usedby_openVasgui_tunnel.sh
+echo -e "$wwcontent" > $SCRIPTPATH/ssh/usedby_openVasgui_tunnel.sh
 
 ccontent=$(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh)
 wcontent="${ccontent/$toreplacecon/$SSHCON}"
@@ -191,7 +188,7 @@ mkdir -p $SCRIPTPATH/reports
 sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master -t $SCRIPTPATH/master.sh
 curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master.service -o /tmp/temp.file
 sed -i 's|\$scriptspath\$|\'"$SCRIPTPATH"'|' /tmp/temp.file
-cp /tmp/temp.file usr/lib/systemd/system/master.service
+cp /tmp/temp.file /usr/lib/systemd/system/master.service
 
 sudo systemctl daemon-reload
 sudo systemctl restart ssh

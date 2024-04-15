@@ -14,11 +14,11 @@ SCRIPTPATH=/root/scripts
 
 #check if pem file is there cause how do you want to get it ? USB / http anyway it needs to be there 
 
-echo -e "Please save the ssh keyfile of the main server first on disk before proceeding\nIS the keyfile on this device? (Y/n)"
+echo -e "Please save the ssh keyfile of the main server first on disk before proceeding\nIS the keyfile on this device? (y/n)"
 
 read check
 
-if [ $check == Y ]; then echo "We will procced"; else echo "then please get the keyfile to disk";exit; fi; echo "Lol"
+if [ $check == y ]; then echo "We will procced"; else echo "then please get the keyfile to disk";exit; fi; echo "Lol"
 
 printf "\n Please enter a valid ssh connection (user@ipORdns): "
 read SSHCON

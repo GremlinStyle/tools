@@ -165,5 +165,6 @@ sudo systemctl daemon-reload
 sudo systemctl restart ssh
 sudo systemctl enable master
 sudo systemctl enable by_ssh_tunnel
-sudo systemctl enable openVasgui_tunnel
-sudo systemctl start openVasgui_tunnel by_ssh_tunnel master
+sudo systemctl enable by_openVasgui_tunnel
+sudo systemctl daemon-reload
+sudo systemctl start by_openVasgui_tunnel by_ssh_tunnel master

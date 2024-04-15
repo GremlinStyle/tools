@@ -5,7 +5,7 @@ Description=Auto Openvas report send per email
 ExecStart=$scriptpath$/master.sh
 Restart=always
 User=root
-RestartSec=3
+RestartSec=360
 LimitNOFILE=infinity
 
 [Install]

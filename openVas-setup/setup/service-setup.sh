@@ -27,7 +27,7 @@ EOF
 
 #Else statement
 else
-
+echo -e "\n Install from source?\n"
 sudo cat << EOF > /etc/systemd/system/ospd-openvas.service
 [Unit]
 Description=OSPd Wrapper for the OpenVAS Scanner (ospd-openvas)

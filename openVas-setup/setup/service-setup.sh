@@ -151,25 +151,27 @@ fi
 
 
 #Create path
-mkdir -p /root/scripts/ssh && echo "scripts are saved in $SCRIPTPATH"
+mkdir -p /root/scripts/ssh  \
 
-curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh -o /root/scripts/ssh/usedby_openVasgui_tunnel.sh
-
-curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh -o /root/scripts/ssh/usedby_ssh_tunnel.sh
+&& curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tunScript.sh -o /root/scripts/ssh/usedby_openVasgui_tunnel.sh \
 
 
-curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tun.service -o /usr/lib/systemd/system/by_openVasgui_tunnel.service
-
-curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tun.service -o /usr/lib/systemd/system/by_ssh_tunnel.service
+&& curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tunScript.sh -o /root/scripts/ssh/usedby_ssh_tunnel.sh \
 
 
-sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config_rasp -t /etc/ssh/sshd_config
+&& curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tun.service -o /usr/lib/systemd/system/by_openVasgui_tunnel.service \
+
+&& curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tun.service -o /usr/lib/systemd/system/by_ssh_tunnel.service \
+
+
+&& sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config_rasp -t /etc/ssh/sshd_config \
 
 #Now only the master is missing
-mkdir -p /root/scripts/reports
-sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master -t /root/scripts/master.sh
+&& sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master -t /root/scripts/master.sh \
 
-curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master.service -o /usr/lib/systemd/system/master.service
+&& curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master.service -o /usr/lib/systemd/system/master.service \
+
+&& echo "scripts are saved in /root/scripts"
 
 sudo systemctl daemon-reload
 sudo systemctl restart ssh

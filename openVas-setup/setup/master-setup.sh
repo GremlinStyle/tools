@@ -14,11 +14,11 @@ SCRIPTPATH=/root/scripts
 
 #check if pem file is there cause how do you want to get it ? USB / http anyway it needs to be there 
 
-echo -e "Please save the ssh keyfile of the main server first on disk before proceeding\nIS the keyfile on this device? (y/n)"
+echo -e "Please save the ssh identity_file of the main server first on disk before proceeding\nIS the identity_file on this device? (y/n)"
 
 read check
 
-if [ $check == y ]; then echo "We will procced"; else echo "then please get the keyfile to disk";exit; fi; echo "Lol"
+if [ $check == y ]; then echo "We will procced"; else echo "then please get the keyfile to disk";exit; fi;
 
 printf "\nPlease enter a valid ssh connection (user@ipORdns): "
 read SSHCON
@@ -30,7 +30,7 @@ ssh-keygen -t rsa
 printf "\n STOP!!!\n PAY ATTENTION AGAIN \n"
 sleep 2
 
-printf "now we gona use ssh-copy-id to put the key onto the server for that you need to just enter the path to the keyfile of the server: "
+printf "now we gona use ssh-copy-id to put the key onto the server for that you need to just enter the path to the identity_file of the server: "
 read pa
 
 ssh-copy-id  -f -o "IdentityFile $pa" $SSHCON
@@ -47,7 +47,7 @@ read PORT2
 
 printf "\nPlease name the admin user of openVas: "
 read GVMUSER
-printf "\nPlease type the password of the admin user from openVas: "
+printf "\nPlease type the password of the user from openVas: "
 read GVMPASWD
 
 #EMAIL CONFIG

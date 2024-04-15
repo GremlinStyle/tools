@@ -1,7 +1,7 @@
 
 
 if [ $1 == "kali" ]; then 
-echo "installation of openvas using apt?"
+echo -e "\ninstallation of openvas using apt?\n"
 sudo cat << EOF > /usr/lib/systemd/system/gsad.service
 [Unit]
 Description=Greenbone Security Assistant daemon (gsad)

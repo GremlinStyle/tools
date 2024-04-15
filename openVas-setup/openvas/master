@@ -5,9 +5,9 @@ echo "Sleeping be sure openvas is already running when continueing"
 sleep 180
 sudo chmod 662  /var/run/gvmd/gvmd.sock
 
-getid() { local file=$1; gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASDW socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//task/@id' | uniq > "$file"; }
-saverp() { local line=$1; gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASDW socket --socketpath /var/run/gvmd/gvmd.sock --xml "<get_results  filter='apply_overrides=0 min_qod=70 task_id=$line rows=1000 first=1 sort-reverse=severity' />" > "$rep/$line"; }
-send() { local file=$1; sendemail -f "$FROMAIL" -t "$TOMAIL" -u "Subject of the email" -m "OpenVas report send: bonjur" -a "$file2" -s smtp.gmail.com -o tls=yes -xu "$FROMAIL" -xp "$APPKEY"; }
+getid() { local file=$1; gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//task/@id' | uniq > "$file"; }
+saverp() { local line=$1; gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /var/run/gvmd/gvmd.sock --xml "<get_results  filter='apply_overrides=0 min_qod=70 task_id=$line rows=1000 first=1 sort-reverse=severity' />" > "$rep/$line"; }
+send() { local file=$1; sendemail -f "$FROMAIL" -t "$TOMAIL" -u "Report from Minion" -m "OpenVas report send: bonjur" -a "$file2" -s smtp.gmail.com -o tls=yes -xu "$FROMAIL" -xp "$APPKEY"; }
 
 ss() {
     local file=$1

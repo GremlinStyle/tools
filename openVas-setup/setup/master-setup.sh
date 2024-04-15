@@ -37,10 +37,10 @@ ssh-copy-id  -f -o "IdentityFile $pa" $SSHCON
 
 #SSH config for tunnel:
 
-echo -e "Please enter the first port of the server which will be used for the tunnels"
+echo -e "\nPlease enter the first port of the server which will be used for the tunnels: "
 read PORT1
 
-echo -e "Please enter the second port of the server which will be used for the tunnels"
+echo -e "\nPlease enter the second port of the server which will be used for the tunnels: "
 read PORT2
 
 #OPENVAS / GVM CONFIG
@@ -48,7 +48,7 @@ read PORT2
 printf "\nPlease name the admin user of openVas: "
 read GVMUSER
 printf "\nPlease type the password of the admin user from openVas: "
-read GVMPASDW
+read GVMPASWD
 
 #EMAIL CONFIG
 
@@ -71,16 +71,16 @@ export PORT2=PORT2
 #export KEYPATH=/root/.ssh/id_rsa
 
 export GVMUSER=$GVMUSER
-export GVMPASDW=$GVMPASDW
+export GVMPASWD=$GVMPASWD
 export APPKEY=$APPKEY
 export TOMAIL=$TOMAIL
 export FROMAIL=$FROMAIL
 
 
-sudo echo -e "export SCRIPTPATH=$SCRIPTPATH\nexport GVMUSER=$GVMUSER\nexport GVMPASDW=$GVMPASDW\nexport SSHCON=$SSHCON\nexport APPKEY=$APPKEY\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.profile
+sudo echo -e "export SCRIPTPATH=$SCRIPTPATH\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=$APPKEY\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.profile
 #Without Keypath
-#sudo printf "export SCRIPTPATH="$SCRIPTPATH"\nexport KEYPATH="$KEYPATH"\nexport GVMUSER="$GVMUSER"\nexport GVMPASDW="$GVMPASDW"\nexport SSHCON="$SSHCON"\nexport APPKEY="$APPKEY"\nexport TOMAIL="$TOMAIL"\nexport FROMAIL=$FROMAIL >> $HOME/.profile
-#sudo printf "export SCRIPTPATH="$SCRIPTPATH"\nexport KEYPATH="$KEYPATH"\nexport GVMUSER="$user"\nexport GVMPASDW="$pasdw"\nexport SSHCON="$sshcon >> /root/.profile
+#sudo printf "export SCRIPTPATH="$SCRIPTPATH"\nexport KEYPATH="$KEYPATH"\nexport GVMUSER="$GVMUSER"\nexport GVMPASWD="$GVMPASWD"\nexport SSHCON="$SSHCON"\nexport APPKEY="$APPKEY"\nexport TOMAIL="$TOMAIL"\nexport FROMAIL=$FROMAIL >> $HOME/.profile
+#sudo printf "export SCRIPTPATH="$SCRIPTPATH"\nexport KEYPATH="$KEYPATH"\nexport GVMUSER="$user"\nexport GVMPASWD="$pasdw"\nexport SSHCON="$sshcon >> /root/.profile
 
 
 #START OF INSTALLATION
@@ -92,7 +92,7 @@ if hostnamectl | grep -qiP 'system.*[kK]ali'; then
     sudo apt install openvas -y --fix-missing
     sudo gvm-setup
     sudo -E -u _gvm -g _gvm gvmd --delete-user=admin
-    sudo -E -u _gvm -g _gvm gvmd --create-user=$GVMUSER --password=$GVMPASDW
+    sudo -E -u _gvm -g _gvm gvmd --create-user=$GVMUSER --password=$GVMPASWD
     sudo bash <(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/service-setup.sh) "kali"
 
     
@@ -116,7 +116,6 @@ fi
 #Create Services and configure them
 
 #IMPORTANT 
-
 
 echo -e "\n And for the last step change the password"
 passwd

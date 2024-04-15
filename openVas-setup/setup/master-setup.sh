@@ -20,7 +20,7 @@ read check
 
 if [ $check == y ]; then echo "We will procced"; else echo "then please get the keyfile to disk";exit; fi; echo "Lol"
 
-printf "\n Please enter a valid ssh connection (user@ipORdns): "
+printf "\nPlease enter a valid ssh connection (user@ipORdns): "
 read SSHCON
 
 printf "Please just hit Enter for the ssh-key generation: "
@@ -73,17 +73,13 @@ export FROMAIL=$FROMAIL
 
 
 if [ $SHELL -eq "/bin/bash" ]; then
-sudo echo -e "\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.bashrc
+    sudo echo -e "\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.bashrc
 elif [ $SHELL -eq "/usr/bin/zsh" ]; then
-sudo echo -e "\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.zshrc
+    sudo echo -e "\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.zshrc
 else
-echo "Unknown Shell"
-return
-
-
-#Without Keypath
-#sudo printf "export SCRIPTPATH="$SCRIPTPATH"\nexport KEYPATH="$KEYPATH"\nexport GVMUSER="$GVMUSER"\nexport GVMPASWD="$GVMPASWD"\nexport SSHCON="$SSHCON"\nexport APPKEY="$APPKEY"\nexport TOMAIL="$TOMAIL"\nexport FROMAIL=$FROMAIL >> $HOME/.bashrc
-
+    echo "Unknown Shell"
+    exit
+fi
 
 #START OF INSTALLATION
 # of openvas for debian according to ("https://greenbone.github.io/docs/latest/22.4/source-build/index.html") with changes for prompted user and password

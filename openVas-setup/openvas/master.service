@@ -2,6 +2,7 @@
 Description=Auto Openvas report send per email
 
 [Service]
+EnvironmentFile=/root/scripts/envar.conf
 ExecStart=/bin/bash /root/scripts/master.sh
 Restart=always
 User=root

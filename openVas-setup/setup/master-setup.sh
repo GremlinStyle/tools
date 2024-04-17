@@ -81,6 +81,10 @@ else
     exit
 fi
 
+#Creating file containing variables for Services
+sudo echo -e "\nGVMUSER=$GVMUSER\nGVMPASWD=$GVMPASWD\nSSHCON=$SSHCON\nAPPKEY=\"$APPKEY\"\nTOMAIL=$TOMAIL\nFROMAIL=$FROMAIL\nPORT1=$PORT1\nPORT2=$PORT2" > /root/scripts/envar.conf
+
+
 #START OF INSTALLATION
 # of openvas for debian according to ("https://greenbone.github.io/docs/latest/22.4/source-build/index.html") with changes for prompted user and password
 

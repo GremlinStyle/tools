@@ -2,6 +2,7 @@
 Description=SSH Tunnel By Me
 
 [Service]
+EnvironmentFile=/root/scripts/envar.conf
 ExecStart=/bin/bash /root/scripts/ssh/usedby_ssh_tunnel.sh
 Restart=always
 User=root

@@ -2,6 +2,7 @@
 Description=SSH Tunnel by Adam
 
 [Service]
+EnvironmentFile=/root/scripts/envar.conf
 ExecStart=/bin/bash /root/scripts/ssh/usedby_openVasgui_tunnel.sh
 Restart=always
 User=root

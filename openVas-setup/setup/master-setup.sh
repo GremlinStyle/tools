@@ -102,6 +102,7 @@ if hostnamectl | grep -qiP 'system.*[kK]ali'; then
     
 elif hostnamectl | grep -qiP 'system.*[dD]ebian'; then
     echo -e "OS is Debian Linux\nonly possible installation using source and build to install\n it is a hasle but that's why this script exist\n do you want to install:(y/n)"
+    exit
     read ans
     if [ $ans == y ]; then
         echo "I shall continue on this treacherous path"

@@ -37,32 +37,33 @@ sleep 2
 echo -e "\n\e[96m\e[1m[*]\e[0m Now we will use ssh-copy-id to put the freshly generated key onto the server for which will allow us to connect to the server without any need for passwords or keys\n\nPlease Enter the \e[31mcomplete path\e[0m to the identity file of the server:"
 read pa
 
-if file $pa | grep -qiP "key" ; then echo "\nDoes look like a key file thanks\n"; fi 
+for i in {1..3}
+if file $pa | grep -qiP "key" ; then echo -e "\nDoes look like a key file thanks\n";break; else echo "\n Doesn't look like a key file. PLEASE enter the correct path: ";read pa;if [ $i -eq 3 ]; then echo -e "Your three chances are gone\nExiting";exit;fi; fi
 
 ssh-copy-id  -f -o "IdentityFile $pa" $SSHCON
 
 #SSH config for tunnel:
 
-echo -e "\nPlease enter the first port of the server which will be used for the tunnels: "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the first port of the server which will be used for the \e[32mssh tunnel\e[0m: "
 read PORT1
 
-echo -e "\nPlease enter the second port of the server which will be used for the tunnels: "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the second port of the server which will be used for the \e[32mWebpage tunnel\e[0m: "
 read PORT2
 
 #OPENVAS / GVM CONFIG
 
-printf "\nPlease name the admin user of openVas: "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: "
 read GVMUSER
-printf "\nPlease type the password of the user from openVas: "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: "
 read GVMPASWD
 
 #EMAIL CONFIG
 
-printf "\nPlease type the email used to send reports: "
+echo -e "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: "
 read FROMAIL
-printf "\nPlease type the Appkey of the email you use to send reports: "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
 read APPKEY
-printf "\nPlease type the email used to receive reports: "
+echo -e "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
 read TOMAIL
 
 
@@ -128,5 +129,5 @@ fi
 
 #IMPORTANT 
 
-echo -e "\n And for the last step change the password"
+echo -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the current device user\e[0m to a more secure one\nIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
 passwd

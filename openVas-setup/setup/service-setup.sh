@@ -2,6 +2,28 @@
 
 if [ $1 == "kali" ]; then 
 echo -e "\ninstallation of openvas using apt?\n"
+sudo cat << EOF > /usr/lib/systemd/system/gsad.service
+[Unit]
+Description=Greenbone Security Assistant daemon (gsad)
+Documentation=man:gsad(8) https://www.greenbone.net
+After=network.target gvmd.service
+Wants=gvmd.service
+
+[Service]
+Type=exec
+User=_gvm
+Group=_gvm
+RuntimeDirectory=gsad
+RuntimeDirectoryMode=2775
+PIDFile=/run/gsad/gsad.pid
+ExecStart=/usr/sbin/gsad --foreground --listen 0.0.0.0 --port 9392
+Restart=always
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
+Alias=greenbone-security-assistant.service
+EOF
 #Else statement
 else
 echo -e "\n Install from source?\n"
@@ -141,6 +163,8 @@ mkdir -p /root/scripts/ssh \
 
 sudo chmod +x /root/scripts/ssh/usedby_ssh_tunnel.sh && sudo chmod +x /root/scripts/ssh/usedby_openVasgui_tunnel.sh && sudo chmod +x /root/scripts/master.sh && echo "chmod +x for all scripts was a success"
 
+mkdir -p /root/scripts/reports
+
 sudo systemctl daemon-reload
 sudo systemctl restart ssh
 sudo systemctl enable gvm-start
@@ -148,4 +172,6 @@ sudo systemctl enable master
 sudo systemctl enable by_ssh_tunnel
 sudo systemctl enable by_openVasgui_tunnel
 sudo systemctl daemon-reload
-sudo systemctl start gvm-start by_openVasgui_tunnel by_ssh_tunnel master
+sudo systemctl start gvm-start
+for i in {0..180}; sleep 1 && echo "sleept for $i seconds";
+sudo systemctl start by_openVasgui_tunnel by_ssh_tunnel master

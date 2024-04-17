@@ -37,8 +37,19 @@ sleep 2
 echo -e "\n\e[96m\e[1m[*]\e[0m Now we will use ssh-copy-id to put the freshly generated key onto the server for which will allow us to connect to the server without any need for passwords or keys\n\nPlease Enter the \e[31mcomplete path\e[0m to the identity file of the server:"
 read pa
 
-for i in {1..3}
-if file $pa | grep -qiP "key" ; then echo -e "\nDoes look like a key file thanks\n";break; else echo "\n Doesn't look like a key file. PLEASE enter the correct path: ";read pa;if [ $i -eq 3 ]; then echo -e "Your three chances are gone\nExiting";exit;fi; fi
+for i in {1..3}; do
+    if file $pa | grep -qiP "key"; then
+        echo -e "\nDoes look like a key file thanks\n"
+        break
+    else
+        echo -e "\nDoesn't look like a key file. PLEASE enter the correct path: "
+        read pa
+        if [ $i -eq 3 ]; then
+            echo -e "Your three chances are gone\nExiting"
+            exit
+        fi
+    fi
+done
 
 ssh-copy-id  -f -o "IdentityFile $pa" $SSHCON
 

@@ -159,12 +159,16 @@ mkdir -p /root/scripts/ssh \
 && sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config_rasp -O /etc/ssh/sshd_config \
 && sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master -O /root/scripts/master.sh \
 && curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/openvas/master.service -o /usr/lib/systemd/system/master.service \
+&& curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/gvm-start.service -o /usr/lib/systemd/system/gvm-start.service \
 && echo "scripts are saved in /root/scripts"
+
+sudo chmod +x /root/scripts/ssh/usedby_ssh_tunnel.sh && sudo chmod +x /root/scripts/ssh/usedby_openVasgui_tunnel.sh && sudo chmod +x /root/scripts/master.sh && echo "chmod +x for all scripts was a success"
 
 sudo systemctl daemon-reload
 sudo systemctl restart ssh
+sudo systemctl enable gvm-start
 sudo systemctl enable master
 sudo systemctl enable by_ssh_tunnel
 sudo systemctl enable by_openVasgui_tunnel
 sudo systemctl daemon-reload
-sudo systemctl start by_openVasgui_tunnel by_ssh_tunnel master
+sudo systemctl start gvm-start by_openVasgui_tunnel by_ssh_tunnel master

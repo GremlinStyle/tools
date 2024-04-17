@@ -72,6 +72,7 @@ export TOMAIL=$TOMAIL
 export FROMAIL=$FROMAIL
 
 
+#Why the hell is this needed if the services don'T use it
 if [ $SHELL == "/bin/bash" ]; then
     sudo echo -e "\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.bashrc
 elif [ $SHELL == "/usr/bin/zsh" ]; then

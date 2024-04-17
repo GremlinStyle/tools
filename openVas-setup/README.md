@@ -1,3 +1,6 @@
 I am working currently on a complete installation script for openvas inclusive some personal services
 
-sudo bash <(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/master-setup.sh)
+<code>
+curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/master-setup.sh -o master-setup.sh
+sudo bash master-setup.sh
+</code>

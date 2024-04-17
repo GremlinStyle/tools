@@ -20,10 +20,10 @@ ss() {
     done)
 }
 
-rep=$SCRIPTPATH"/reports/rep"
-ids=$SCRIPTPATH"/reports/ids"
-ids2=$SCRIPTPATH"/reports/ids2"
-tmpids=$SCRIPTPATH"/reports/tmpids"
+rep="/root/scripts/reports/rep"
+ids="/root/scripts/reports/ids"
+ids2="/root/scripts/reports/ids2"
+tmpids="/root/scripts/reports/tmpids"
 
 
 while ($true) {

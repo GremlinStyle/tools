@@ -14,24 +14,30 @@ SCRIPTPATH=/root/scripts
 
 #check if pem file is there cause how do you want to get it ? USB / http anyway it needs to be there 
 
-echo -e "Please save the ssh identity_file of the main server first on disk before proceeding\nIS the identity_file on this device? (y/n)"
-
+echo -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\nIS the identity_file on this device? (\e[32my\e[0m/\e[31mn\e[0m)"
 read check
 
-if [ $check == y ]; then echo "We will procced"; else echo "then please get the keyfile to disk";exit; fi;
+if [ $check == y ]; then echo "We will proceed"; else echo "then please get the keyfile to disk";exit; fi;
 
-printf "\nPlease enter a valid ssh connection (user@ipORdns): "
-read SSHCON
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: "
+read SCONU
 
-printf "Please just hit Enter for the ssh-key generation: "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: "
+read SCONI
+
+SSHCON="$SCONU@$SCONI"
+
+echo -e "\n\e[96m\e[1m[*]\e[0m Please leave the \e[31mpassword field empty\e[0m at the ssh-key generation: "
 
 ssh-keygen -t rsa
 
-printf "\n STOP!!!\n PAY ATTENTION AGAIN \n"
+echo -e "\n\e[96m\e[1m[*]\e[0m We will resume with the setup in 2 seconds"
 sleep 2
 
-printf "now we gona use ssh-copy-id to put the key onto the server for that you need to just enter the path to the identity_file of the server: "
+echo -e "\n\e[96m\e[1m[*]\e[0m Now we will use ssh-copy-id to put the freshly generated key onto the server for which will allow us to connect to the server without any need for passwords or keys\n\nPlease Enter the \e[31mcomplete path\e[0m to the identity file of the server:"
 read pa
+
+if file $pa | grep -qiP "key" ; then echo "\nDoes look like a key file thanks\n"; fi 
 
 ssh-copy-id  -f -o "IdentityFile $pa" $SSHCON
 

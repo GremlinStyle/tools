@@ -22,7 +22,7 @@ getidbet() {
 	if [ "${#idist[@]}" == "${#staist[@]}" ]; then
 	for i in "${!idist[@]}"; do
 	echo "$i"
-	if [ ${staist[$i]} == "Done" ];then echo "${idist[$i]}" >> "$file";fi
+	if [ ${staist[$i]} == "Done" ];then echo "${idist[$i]}" >> "$file"; else echo "Task ${idist[$i]} is not done" >> /root/scripts/log.master; fi
 	done
 	else
 	echo "ERROR: States of tasks does not mach the list of tasks" >> /root/scripts/log.master

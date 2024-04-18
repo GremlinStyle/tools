@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo gvm-start
-echo "Sleeping be sure openvas is already running when continueing"
+echo "Sleeping be sure openvas is already running when continueing" >> /root/scripts/log.master
 sleep 180
 sudo chmod 662  /var/run/gvmd/gvmd.sock
 
@@ -35,25 +35,25 @@ else
     d=$(cat timestamp)
 fi
 
-echo $d
+echo $d >> /root/scripts/log.master
 
 dd=$(($d + 360))
-echo $dd
+echo $dd >> /root/scripts/log.master
 
 e=$(date +%s)
 if [ $e -gt $dd ]; then
 	# do flip
-	echo flipping
+	echo "flipping" >> /root/scripts/log.master
 
 	#Start of Get Reports & send em
 	if [ -e $rep ]; then
-	echo "rep exist nothing to do"
+	echo "rep exist nothing to do" >> /root/scripts/log.master
 	else 
 	mkdir $rep
-	echo "rep created"
+	echo "rep created" >> /root/scripts/log.master
 	fi
 	if [ -e "$ids" ]; then
-		echo "Ids Exist"
+		echo "Ids Exist" >> /root/scripts/log.master
 		getid "$ids2"
 
 	#    	seconds_in_month="1" #$((30 * 24 * 60 * 60))
@@ -66,7 +66,7 @@ if [ $e -gt $dd ]; then
 		
 
 		# Your code goes here
-		echo "Executing your code because IDs are different."
+		echo "Executing your code because IDs are different." >> /root/scripts/log.master
 		cat "$tmpids" | (while IFS= read -r line; do
 		echo "$line"
 		saverp "$line"
@@ -80,10 +80,10 @@ if [ $e -gt $dd ]; then
 		cp "$ids2" "$ids"
 		rm "$ids2"
 	    else
-		echo "IDs are the same. No action needed."
+		echo "IDs are the same. No action needed." >> /root/scripts/log.master
 	    fi;
 	else
-		echo "Ids not there starting firstime(should)"
+		echo "Ids not there starting firstime(should)" >> /root/scripts/log.master
 		ss "$ids"
 	fi
 

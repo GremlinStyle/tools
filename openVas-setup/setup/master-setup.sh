@@ -14,10 +14,10 @@ SCRIPTPATH=/root/scripts
 
 #check if pem file is there cause how do you want to get it ? USB / http anyway it needs to be there 
 
-echo -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\nIS the identity_file on this device? (\e[32my\e[0m/\e[31mn\e[0m)"
+echo -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\nIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m)"
 read check
 
-if [ $check == y ]; then echo "We will proceed"; else echo "then please get the keyfile to disk";exit; fi;
+if [ $check == y ]; then echo "Ingore: We will proceed"; else echo "Rude: then please get the keyfile to disk";exit; fi;
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: "
 read SCONU
@@ -34,12 +34,12 @@ ssh-keygen -t rsa
 echo -e "\n\e[96m\e[1m[*]\e[0m We will resume with the setup in 2 seconds"
 sleep 2
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Now we will use ssh-copy-id to put the freshly generated key onto the server for which will allow us to connect to the server without any need for passwords or keys\n\nPlease Enter the \e[31mcomplete path\e[0m to the identity file of the server:"
+echo -e "\n\e[96m\e[1m[*]\e[0m Now we will use ssh-copy-id to put the freshly generated key onto the server for which will allow us to connect to the server without any need for passwords or keys\n\nPlease Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:"
 read pa
 
 for i in {1..3}; do
     if file $pa | grep -qiP "key"; then
-        echo -e "\nDoes look like a key file thanks\n"
+        echo -e "\nDoes look like a key file, thanks and now you may proceed\n"
         break
     else
         echo -e "\nDoesn't look like a key file. PLEASE enter the correct path: "
@@ -55,10 +55,10 @@ ssh-copy-id  -f -o "IdentityFile $pa" $SSHCON
 
 #SSH config for tunnel:
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the first port of the server which will be used for the \e[32mssh tunnel\e[0m: "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:"
 read PORT1
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the second port of the server which will be used for the \e[32mWebpage tunnel\e[0m: "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:"
 read PORT2
 
 #OPENVAS / GVM CONFIG

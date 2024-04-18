@@ -7,7 +7,7 @@ sudo chmod 662  /var/run/gvmd/gvmd.sock
 
 getid() { local file=$1; gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//task/@id' | uniq > "$file"; }
 saverp() { local line=$1; gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /var/run/gvmd/gvmd.sock --xml "<get_results  filter='apply_overrides=0 min_qod=70 task_id=$line rows=1000 first=1 sort-reverse=severity' />" > "$rep/$line"; }
-send() { local file=$1; sendemail -f "$FROMAIL" -t "$TOMAIL" -u "Report from Minion" -m "OpenVas report send: bonjur" -a "$file2" -s smtp.gmail.com -o tls=yes -xu "$FROMAIL" -xp "$APPKEY" && echo "email sended?" >> /root/scripts/log.master }
+send() { local file=$1; sendemail -f "$FROMAIL" -t "$TOMAIL" -u "Report from Minion" -m "OpenVas report send: bonjur" -a "$file2" -s smtp.gmail.com -o tls=yes -xu "$FROMAIL" -xp "$APPKEY" && echo "email sended?" >> /root/scripts/log.master; }
 
 ss() {
     local file=$1
@@ -31,11 +31,12 @@ echo -e "paths in $rep\t$ids\t$ids2\t$tmpids" >> /root/scripts/log.master
 
 
 echo "time check" >> /root/scripts/log.master
+
 if [ ! -e /root/scripts/timestamp ]; then
-    d=$(date +%s)
-    echo $d > /root/scripts/timestamp
+    d=$(date +%s);
+    echo $d > /root/scripts/timestamp;
 else
-    d=$(cat /root/scripts/timestamp)
+    d=$(cat /root/scripts/timestamp);
 fi
 
 echo $d >> /root/scripts/log.master
@@ -46,6 +47,7 @@ echo $dd >> /root/scripts/log.master
 e=$(date +%s)
 
 echo "ante portas" >> /root/scripts/log.master
+
 if [ $e -gt $dd ]; then
 	# do flip
 	echo "flipping" >> /root/scripts/log.master
@@ -57,6 +59,7 @@ if [ $e -gt $dd ]; then
 	mkdir $rep
 	echo "rep created" >> /root/scripts/log.master
 	fi
+	
 	if [ -e "$ids" ]; then
 		echo "Ids Exist" >> /root/scripts/log.master
 		getid "$ids2"
@@ -94,6 +97,5 @@ if [ $e -gt $dd ]; then
 
     echo $e > /root/scripts/timestamp
 else
-sleep 60
+	sleep 60
 fi
-

@@ -143,7 +143,7 @@ sudo systemctl start gsad
 sudo systemctl status gsad
 fi
 
-
+sudo -u _gvm greenbone-feed-sync
 
 #Now The custom scripts for ssh and web access
 
@@ -173,5 +173,8 @@ sudo systemctl enable by_ssh_tunnel
 sudo systemctl enable by_openVasgui_tunnel
 sudo systemctl daemon-reload
 sudo systemctl start gvm-start
-for i in {0..180}; sleep 1 && echo "sleept for $i seconds";
+for i in {0..180}; do
+sleep 1
+echo "sleept for $i seconds"
+done
 sudo systemctl start by_openVasgui_tunnel by_ssh_tunnel master

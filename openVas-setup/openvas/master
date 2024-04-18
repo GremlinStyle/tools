@@ -1,8 +1,8 @@
 #!/bin/bash
 
 sudo gvm-start
-echo -e "\n- - - - - $(date) - - - - -\n" >> /root/scripts/log.master
-echo "Sleeping be sure openvas is already running when continueing" >> /root/scripts/log.master
+echo -e "\n- - - - - $(date) - - - - -" >> /root/scripts/log.master
+echo "Sleeping: be sure openvas is already running when continueing" >> /root/scripts/log.master
 sleep 180
 sudo chmod 662  /var/run/gvmd/gvmd.sock
 
@@ -25,11 +25,11 @@ getidbet() {
 	if [ ${staist[$i]} == "Done" ];then echo "${idist[$i]}" >> "$file"; else echo "Task ${idist[$i]} is not done" >> /root/scripts/log.master; fi
 	done
 	else
-	echo "ERROR: States of tasks does not mach the list of tasks" >> /root/scripts/log.master
+	echo "ERROR: List of tasks status does not mach the list of tasks ids in Length" >> /root/scripts/log.master
 	fi
 }
 saverp() { local line=$1; sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /var/run/gvmd/gvmd.sock --xml "<get_results  filter='apply_overrides=0 min_qod=70 task_id=$line rows=1000 first=1 sort-reverse=severity' />" > "$rep/$line"; }
-send() { local filese=$1; sendemail -f "$FROMAIL" -t "$TOMAIL" -u "Report from Minion" -m "OpenVas report send: bonjur" -a "$filese" -s smtp.gmail.com -o tls=yes -xu "$FROMAIL" -xp "$APPKEY" && echo "email sended?" >> /root/scripts/log.master; }
+send() { local filese=$1; sendemail -f "$FROMAIL" -t "$TOMAIL" -u "Report from Minion: $(hostname)" -m "OpenVas report send: bonjur" -a "$filese" -s smtp.gmail.com -o tls=yes -xu "$FROMAIL" -xp "$APPKEY" && echo "email sended?" >> /root/scripts/log.master; }
 
 ss() {
     local file=$1
@@ -56,7 +56,7 @@ echo -e "paths in $rep\t$ids\t$ids2\t$tmpids" >> /root/scripts/log.master
 echo "ante portas" >> /root/scripts/log.master
 
 	# do flip
-	echo "flipping" >> /root/scripts/log.master
+	echo "toss a coin" >> /root/scripts/log.master
 
 	#Start of Get Reports & send em
 	if [ -e $rep ]; then
@@ -83,7 +83,7 @@ echo "ante portas" >> /root/scripts/log.master
 		
 
 		# Your code goes here
-		echo "Executing your code because IDs are different." >> /root/scripts/log.master
+		echo "Executing of code because IDs are different." >> /root/scripts/log.master
 		cat "$tmpids" | (while IFS= read -r line; do
 		echo "$line"
 		saverp "$line"
@@ -100,7 +100,7 @@ echo "ante portas" >> /root/scripts/log.master
 		echo "IDs are the same. No action needed." >> /root/scripts/log.master
 	    fi;
 	else
-		echo "Ids not there starting firstime(should)" >> /root/scripts/log.master
+		echo "No ids found. This should be the firstime" >> /root/scripts/log.master
 		ss "$ids"
 	fi
 

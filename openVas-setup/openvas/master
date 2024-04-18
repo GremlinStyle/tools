@@ -8,30 +8,25 @@ sudo chmod 662  /var/run/gvmd/gvmd.sock
 
 getid() { local file=$1;sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//task/@id' | uniq > "$file";}
 getidbet() {
+	local file=$1
 	idist=()
-sudo -u worker gvm-cli --gmp-username adam --gmp-password isbetter socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//task/@id' | uniq > t
-while read line; do
-    idist+=("$line")
-done < t
+	sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//task/@id' | uniq > /tmp/temp.ids
+	while read line; do idist+=("$line");done < /tmp/temp.ids
+	#make a list of states
+	staist=()
+	sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//scan_run_status' -n > /tmp/temp.status
+	while read line; do staist+=("$line");done < /tmp/temp.status
 
-#make a list of states
-staist=()
-sudo -u worker gvm-cli --gmp-username adam --gmp-password isbetter socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//scan_run_status' -n > t
-while read line; do
-    staist+=("$line")
-done < t
+	echo "" > "$ids2"
 
-echo "" > "$ids2"
-
-if [ "${#idist[@]}" == "${#staist[@]}" ]; then
+	if [ "${#idist[@]}" == "${#staist[@]}" ]; then
 	for i in "${!idist[@]}"; do
-    		echo "$i"
-			if [ ${staist[$i]} == "Done" ];then
-				echo "${idist[$i]}" >> "$ids2"
+	echo "$i"
+	if [ ${staist[$i]} == "Done" ];then echo "${idist[$i]}" >> "$file";fi
 	done
-else
+	else
 	echo "ERROR: States of tasks does not mach the list of tasks" >> /root/scripts/log.master
-fi
+	fi
 }
 saverp() { local line=$1; sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /var/run/gvmd/gvmd.sock --xml "<get_results  filter='apply_overrides=0 min_qod=70 task_id=$line rows=1000 first=1 sort-reverse=severity' />" > "$rep/$line"; }
 send() { local filese=$1; sendemail -f "$FROMAIL" -t "$TOMAIL" -u "Report from Minion" -m "OpenVas report send: bonjur" -a "$filese" -s smtp.gmail.com -o tls=yes -xu "$FROMAIL" -xp "$APPKEY" && echo "email sended?" >> /root/scripts/log.master; }
@@ -73,7 +68,10 @@ echo "ante portas" >> /root/scripts/log.master
 	
 	if [ -e "$ids" ]; then
 		echo "Ids Exist" >> /root/scripts/log.master
-		getid "$ids2"
+		#getid "$ids2"
+		#Usage of a function which checks if task is Done
+		getidbet "$ids2"
+
 
 	#    	seconds_in_month="1" #$((30 * 24 * 60 * 60))
 	#	echo "Waiting for a month..."

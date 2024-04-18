@@ -29,7 +29,7 @@ tmpids="/root/scripts/reports/tmpids"
 
 echo "paths in $rep\t$id\t$ids2\t$tmpids" >> /root/scripts/log.master
 
-while ($true) {
+while $true; do
 echo "time check" >> /root/scripts/log.master
 if [ ! -e timestamp ]; then
     d=$(date +%s)
@@ -94,5 +94,4 @@ if [ $e -gt $dd ]; then
 else
 sleep 60
 fi
-
-}
+done

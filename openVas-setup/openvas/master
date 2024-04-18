@@ -22,7 +22,7 @@ getidbet() {
 	if [ "${#idist[@]}" == "${#staist[@]}" ]; then
 	for i in "${!idist[@]}"; do
 	echo "$i"
-	if [ ${staist[$i]} == "Done" ];then echo "${idist[$i]}" >> "$file"; else echo "Task ${idist[$i]} is not done" >> /root/scripts/log.master; fi
+	if [ ${staist[$i]} == "Done" ];then echo "${idist[$i]}" >> "$file";echo "This ${idist[$i]} will make a fine addition to my collection"; else echo "Task ${idist[$i]} is not done" >> /root/scripts/log.master; fi
 	done
 	else
 	echo "ERROR: List of tasks status does not mach the list of tasks ids in Length" >> /root/scripts/log.master
@@ -42,21 +42,18 @@ ss() {
     done)
 }
 
-echo "all functions in" >> /root/scripts/log.master
+echo "all functions in da hood" >> /root/scripts/log.master
 
 rep="/root/scripts/reports/rep"
 ids="/root/scripts/reports/ids"
 ids2="/root/scripts/reports/ids2"
 tmpids="/root/scripts/reports/tmpids"
 
-echo -e "paths in $rep\t$ids\t$ids2\t$tmpids" >> /root/scripts/log.master
+echo -e "current variables are:\n\t$rep\n\t$ids\n\t$ids2\n\t$tmpids" >> /root/scripts/log.master
 
 
 
 echo "ante portas" >> /root/scripts/log.master
-
-	# do flip
-	echo "toss a coin" >> /root/scripts/log.master
 
 	#Start of Get Reports & send em
 	if [ -e $rep ]; then

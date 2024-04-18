@@ -92,7 +92,7 @@ export FROMAIL=$FROMAIL
 
 #Why the hell is this needed if the services don'T use it
 #if [ $SHELL == "/bin/bash" ]; then
-#    sudo echo -e "\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.bashrc
+#    
 #elif [ $SHELL == "/usr/bin/zsh" ]; then
 #    sudo echo -e "\nexport GVMUSER=$GVMUSER\nexport GVMPASWD=$GVMPASWD\nexport SSHCON=$SSHCON\nexport APPKEY=\"$APPKEY\"\nexport TOMAIL=$TOMAIL\nexport FROMAIL=$FROMAIL\nexport PORT1=$PORT1\nexport PORT2=$PORT2" >> $HOME/.zshrc
 #else
@@ -117,6 +117,7 @@ if hostnamectl | grep -qiP 'system.*[kK]ali'; then
     sudo -E -u _gvm -g _gvm gvmd --modify-setting 78eceaec-3385-11ea-b237-28d24461215b --value $(sudo -E -u _gvm -g _gvm gvmd --get-users --verbose | grep $GVMUSER | awk '{print $2}')
     curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/service-setup.sh -o service-setup.sh
     sudo bash service-setup.sh "kali"
+
 
     
 elif hostnamectl | grep -qiP 'system.*[dD]ebian'; then

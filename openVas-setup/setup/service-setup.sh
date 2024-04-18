@@ -147,7 +147,11 @@ sudo -u _gvm greenbone-feed-sync
 
 #Now The custom scripts for ssh and web access
 
-
+#Up-To-Date gvm-cli and working User for gvm-cli usage (cause root is not allowed to use gvm-cli)
+useradd -m -s /bin/bash worker
+sudo -u worker python3 -m pip install python-gvm --upgrade
+sudo -u worker python3 -m pip install gvm-tools --upgrade
+sudo echo -e "\nexport PATH=$PATH:/home/worker/.local/bin" >> /home/worker/.bashrc
 
 #Create path
 mkdir -p /root/scripts/ssh \

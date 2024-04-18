@@ -2,7 +2,7 @@
 
 sudo gvm-start
 echo "Sleeping be sure openvas is already running when continueing" >> /root/scripts/log.master
-sleep 180
+#sleep 180
 sudo chmod 662  /var/run/gvmd/gvmd.sock
 
 getid() { local file=$1; gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//task/@id' | uniq > "$file"; }
@@ -20,14 +20,17 @@ ss() {
     done)
 }
 
+echo "all functions in" >> /root/scripts/log.master
+
 rep="/root/scripts/reports/rep"
 ids="/root/scripts/reports/ids"
 ids2="/root/scripts/reports/ids2"
 tmpids="/root/scripts/reports/tmpids"
 
+echo "paths in $rep\t$id\t$ids2\t$tmpids" >> /root/scripts/log.master
 
 while ($true) {
-#Timer 
+echo "time check" >> /root/scripts/log.master
 if [ ! -e timestamp ]; then
     d=$(date +%s)
     echo $d > timestamp

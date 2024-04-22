@@ -83,10 +83,7 @@ for i in {1..3}; do
     fi
 done
 
-#Enables the Kali Device to connect without a hitch to the server
-ssh-copy-id  -f -o "IdentityFile $pa" "$SCONU@$SCONI"
-#Enables the server to connect without a hitch
-ssh "$SCONU@$SCONI" cat .ssh/id_rsa.pub | tee -a $HOME/.ssh/authorized_keys
+
 
 
 #SSH config for tunnel:
@@ -123,6 +120,10 @@ fi
 
 
 
+#Enables the Kali Device to connect without a hitch to the server
+ssh-copy-id  -f -o "IdentityFile $pa" "$SCONU@$SCONI"
+#Enables the server to connect without a hitch
+ssh "$SCONU@$SCONI" cat .ssh/id_rsa.pub | tee -a $HOME/.ssh/authorized_keys
 
 mkdir -p /root/scripts
 chmod 700 /root/scripts

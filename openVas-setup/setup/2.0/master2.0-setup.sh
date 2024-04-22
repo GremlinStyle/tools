@@ -8,7 +8,8 @@ SCRIPTPATH=/root/scripts
 
 #START OF SET-VARIBLE 
 
-text=("\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: " "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: " "\n\e[96m\e[1m[*]\e[0m Please leave the \e[31mpassword field NOT empty\e[0m at the ssh-key generation but if you want everything else: " "\n\e[96m\e[1m[*]\e[0m Please enter the ssh key password again for me" "\n\e[96m\e[1m[*]\e[0m Now we will use ssh-copy-id to put the freshly generated key onto the server for which will allow us to connect to the server without any need for passwords or keys\n\n\tPlease Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:" "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:" "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:" "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: " "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: " "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: " "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: " "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: ")
+text=("\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: " "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: " "\n\e[96m\e[1m[*]\e[0m Please enter the ssh key password again for me" "\n\e[96m\e[1m[*]\e[0m Now we will use ssh-copy-id to put the freshly generated key onto the server for which will allow us to connect to the server without any need for passwords or keys\n\n\tPlease Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:" "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:" "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:" "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: " "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: " "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: " "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: " "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: ")
+an=(SCONU SCONI SSHPASSWD pa PORT1 PORT2 GVMUSER GVMPASWD FROMAIL APPKEY TOMAIL)
 
 if [ -e /root/scripts/envar.conf ]; then 
 echo -e "A config File was found we will use this one to speed things up\nIf the Variables a right please hit enter without typing anything"; 
@@ -29,8 +30,15 @@ for ((i=1; i<=len; i++)); do
     echo "answer is unchanged\n"
     fi
 done
+if [ $i -le ${#text[@]} ]; then
+for ((; i <= ${#text[@]}; i++));do
+echo -e "${text[$i-1]}
+read ants
+declare ${an[$i-1]}=$ants
+echo "${an[$i-1]}=$ants" >> /root/scripts/envar.conf
+done
 fi
-
+else
 #SSH CONFIG
 
 #check if pem file is there cause how do you want to get it ? USB / http anyway it needs to be there 
@@ -111,6 +119,9 @@ echo "FROMAIL=$FROMAIL" >> /root/scripts/envar.conf
 echo -e "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
 read TOMAIL
 echo "FROMAIL=$FROMAIL" >> /root/scripts/envar.conf
+fi
+
+
 
 
 mkdir -p /root/scripts

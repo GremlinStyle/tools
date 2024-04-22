@@ -155,8 +155,8 @@ sudo echo -e "\nexport PATH=$PATH:/home/worker/.local/bin" >> /home/worker/.bash
 
 #Create path
 mkdir -p /root/scripts/ssh \
-&& curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/ovas.sh -o /root/scripts/ssh/usedby_openVasgui_tunnel.sh \
-&& curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/sshs.sh -o /root/scripts/ssh/usedby_ssh_tunnel.sh \
+&& curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/2.0/ovas.sh -o /root/scripts/ssh/usedby_openVasgui_tunnel.sh \
+&& curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/2.0/sshs.sh -o /root/scripts/ssh/usedby_ssh_tunnel.sh \
 && curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/2tun.service -o /usr/lib/systemd/system/by_openVasgui_tunnel.service \
 && curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/tun.service -o /usr/lib/systemd/system/by_ssh_tunnel.service \
 && sudo wget https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/ssh_services/sshd_config_rasp -O /etc/ssh/sshd_config \

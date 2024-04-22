@@ -76,9 +76,9 @@ for i in {1..3}; do
 done
 
 #Enables the Kali Device to connect without a hitch to the server
-ssh-copy-id  -f -o "IdentityFile $pa" $SSHCON
+ssh-copy-id  -f -o "IdentityFile $pa" "$SCONU@$SCONI"
 #Enables the server to connect without a hitch
-ssh $SSHCON cat .ssh/id_rsa.pub | tee -a $HOME/.ssh/authorized_keys
+ssh "$SCONU@$SCONI" cat .ssh/id_rsa.pub | tee -a $HOME/.ssh/authorized_keys
 
 
 #SSH config for tunnel:

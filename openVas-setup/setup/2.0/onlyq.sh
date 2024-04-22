@@ -1,6 +1,4 @@
 #!/bin/bash
-
-
 SCRIPTPATH=/root/scripts
 
 #START OF SET-VARIBLE 
@@ -29,7 +27,7 @@ for ((i=1; i<=len; i++)); do
 done
 if [ $i -le ${#text[@]} ]; then
 for ((; i <= ${#text[@]}; i++));do
-echo -e "${text[$i-1]}
+echo -e "${text[$i-1]}"
 read ants
 declare ${an[$i-1]}=$ants
 echo "${an[$i-1]}=$ants" >> /root/scripts/envar.conf

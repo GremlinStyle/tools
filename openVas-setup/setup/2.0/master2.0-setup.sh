@@ -62,6 +62,11 @@ echo -e "\n\e[96m\e[1m[*]\e[0m Please leave the \e[31mpassword field NOT empty\e
 
 ssh-keygen -t rsa
 
+#Enables the Kali Device to connect without a hitch to the server
+ssh-copy-id  -f -o "IdentityFile $pa" "$SCONU@$SCONI"
+#Enables the server to connect without a hitch
+ssh "$SCONU@$SCONI" cat .ssh/id_rsa.pub | tee -a $HOME/.ssh/authorized_keys
+
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the ssh key password again for me"
 read -s SSHPASSWD
 echo "SSHPASSWD=$SSHPASSWD" >> /root/scripts/envar.conf

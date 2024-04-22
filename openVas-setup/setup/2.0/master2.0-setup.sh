@@ -27,9 +27,12 @@ read SCONI
 
 SSHCON="$SCONU@$SCONI"
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please leave the \e[31mpassword field empty\e[0m at the ssh-key generation: "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please leave the \e[31mpassword field NOT empty\e[0m at the ssh-key generation but if you want everything else: "
 
 ssh-keygen -t rsa
+
+echo -e \n\e[96m\e[1m[*]\e[0m Please enter the password again for me too save it for the secure usage of ssh"
+read -s SSHPASSWD
 
 echo -e "\n\e[96m\e[1m[*]\e[0m We will resume with the setup in 2 seconds"
 sleep 2
@@ -54,7 +57,7 @@ done
 #Enables the Kali Device to connect without a hitch to the server
 ssh-copy-id  -f -o "IdentityFile $pa" $SSHCON
 #Enables the server to connect without a hitch
-#ssh $SSHCON cat .ssh/id_rsa.pub | tee -a $HOME/.ssh/authorized_keys
+ssh $SSHCON cat .ssh/id_rsa.pub | tee -a $HOME/.ssh/authorized_keys
 
 
 #SSH config for tunnel:
@@ -92,7 +95,7 @@ export GVMPASWD=$GVMPASWD
 export APPKEY=$APPKEY
 export TOMAIL=$TOMAIL
 export FROMAIL=$FROMAIL
-
+export SSHPASSWD=$SSHPASSWD
 
 #Why the hell is this needed if the services don'T use it
 #if [ $SHELL == "/bin/bash" ]; then
@@ -105,7 +108,7 @@ export FROMAIL=$FROMAIL
 #fi
 
 #Creating file containing variables for Services
-sudo echo -e "\nGVMUSER=$GVMUSER\nGVMPASWD=$GVMPASWD\nSSHCON=$SSHCON\nAPPKEY=\"$APPKEY\"\nTOMAIL=$TOMAIL\nFROMAIL=$FROMAIL\nPORT1=$PORT1\nPORT2=$PORT2" > /root/scripts/envar.conf
+sudo echo -e "\nGVMUSER=$GVMUSER\nGVMPASWD=$GVMPASWD\nSSHCON=$SSHCON\nAPPKEY=\"$APPKEY\"\nTOMAIL=$TOMAIL\nFROMAIL=$FROMAIL\nPORT1=$PORT1\nPORT2=$PORT2\nSSHPASSWD=$SSHPASSWD" > /root/scripts/envar.conf
 
 
 #START OF INSTALLATION

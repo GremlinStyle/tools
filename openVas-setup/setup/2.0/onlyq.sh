@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#for getting the scripts
-sudo apt update
-sudo apt install curl xmlstarlet sendmail -y
 
 SCRIPTPATH=/root/scripts
 

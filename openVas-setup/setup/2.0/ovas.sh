@@ -1,5 +1,6 @@
 #!/usr/bin/expect -f
-spawn ssh -N -o StrictHostKeyChecking=no -R $env(PORT1):localhost:9392 $env(SSHCON)
+set timeout -1
+spawn ssh -N -o StrictHostKeyChecking=no -R $env(PORT2):localhost:9392 $env(SSHCON)
 expect "assword"
 send "$env(SSHPASSWD)\n"
-interact
+expect eof

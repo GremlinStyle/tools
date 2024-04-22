@@ -122,7 +122,7 @@ if hostnamectl | grep -qiP 'system.*[kK]ali'; then
     sudo -E -u _gvm -g _gvm gvmd --delete-user=admin
     sudo -E -u _gvm -g _gvm gvmd --create-user=$GVMUSER --password=$GVMPASWD
     sudo -E -u _gvm -g _gvm gvmd --modify-setting 78eceaec-3385-11ea-b237-28d24461215b --value $(sudo -E -u _gvm -g _gvm gvmd --get-users --verbose | grep $GVMUSER | awk '{print $2}')
-    curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/service-setup.sh -o service-setup.sh
+    curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/2.0/service2.0-setup.sh -o service-setup.sh
     sudo bash service-setup.sh "kali"
 
 

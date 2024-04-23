@@ -36,12 +36,12 @@ SSHCON="$SCONU@$SCONI"
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a password for the ssh-key generation "
 pas SSHPASSWD
-
+echo ""
 
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the password of the server identity file file: "
 pas SSHPASSWDS
-
+echo ""
 
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Now we will use ssh-copy-id to put the freshly generated key onto the server for which will allow us to connect to the server without any need for passwords or keys\n\n\tPlease Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:"
@@ -78,7 +78,7 @@ read GVMUSER
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: "
 pas GVMPASWD
-
+echo ""
 
 #EMAIL CONFIG
 
@@ -87,6 +87,7 @@ read FROMAIL
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
 pas APPKEY
+echo ""
 
 echo -e "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
 read TOMAIL

@@ -203,28 +203,8 @@ if hostnamectl | grep -qiP 'system.*[kK]ali'; then
     sudo -E -u _gvm -g _gvm gvmd --modify-setting 78eceaec-3385-11ea-b237-28d24461215b --value $(sudo -E -u _gvm -g _gvm gvmd --get-users --verbose | grep $GVMUSER | awk '{print $2}')
     curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/2.0/service2.0-setup.sh -o service-setup.sh
     sudo bash service-setup.sh "kali"
-
-
-    
-elif hostnamectl | grep -qiP 'system.*[dD]ebian'; then
-    echo -e "OS is Debian Linux\nonly possible installation using source and build to install\n it is a hasle but that's why this script exist\n do you want to install:(y/n)"
-    exit
-    read ans
-    if [ $ans == y ]; then
-        echo "I shall continue on this treacherous path"
-            #Creating user for next steps
-            sudo bash <(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/pre-setup.sh) 
-
-            #Start installation of openvas (Debian) source: https://greenbone.github.io/docs/latest/22.4/source-build/index.html
-            #PS: Followning script (install-setup.sh) is just copy pasted from source
-            sudo bash <(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/install-setup.sh)
-            sudo bash <(curl https://raw.githubusercontent.com/GremlinStyle/tools/main/openVas-setup/setup/service-setup.sh) "deb"
-    fi
+else
+echo -e "\n\e[31m\e[1m[*]\e[0m Warning this doesn't seem to be Kali Linux\ncancel script"
 fi 
 
-#END OF INSTALLATION
-
-#Create Services and configure them
-
-#IMPORTANT 
 

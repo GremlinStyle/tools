@@ -39,12 +39,12 @@ pas SSHPASSWD
 echo ""
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the password of the server identity file file: "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the password of the server identity file "
 pas SSHPASSWDS
 echo ""
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Now we will use ssh-copy-id to put the freshly generated key onto the server for which will allow us to connect to the server without any need for passwords or keys\n\n\tPlease Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:"
+echo -e "\n\e[96m\e[1m[*]\e[0m Please Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:"
 read pa
 
 for i in {1..3}; do

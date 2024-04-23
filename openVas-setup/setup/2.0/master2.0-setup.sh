@@ -100,7 +100,7 @@ echo -e "\n\e[96m\e[1m[*]\e[0m Are these Answers correct?"
 len=${#an[@]}
 for ((i=0; i<len; i++)); do
     if [[ ${an[$i]} =~ $pattern ]]; then
-        echo -e "${text[$i]} [---]"
+        echo -e "${text[$i]} [***]"
     else
         echo -e "${text[$i]} [${!an[$i]}]"
     fi
@@ -207,13 +207,12 @@ expect eof
 
 #Enables the Kali Device to connect without a hitch to the server
 expect -c "
-# Set timeout to -1 to wait indefinitely
 set timeout -1
-
-# Spawn ssh-keygen
 spawn ssh-copy-id  -f -o \"IdentityFile $pa\" \"$SCONU@$SCONI\"
-# Expect \"Enter passphrase (empty for no passphrase)\"
-expect \"Enter passphrase for key\"
+expect {
+	\"Are you sure you want to continue connecting\" {send \"yes\n\";expect \"Enter passphrase for key\"}
+	\"Enter passphrase for key\"
+}
 send \"$SSHPASSWDS\r\"
 expect eof
 "

@@ -15,7 +15,6 @@ pas() {
             eval "$1"="'$once'"
         else
             echo "The first input does not match the second. Try again."
-            exit
         fi
     done
 }

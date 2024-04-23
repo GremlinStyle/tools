@@ -173,9 +173,10 @@ set timeout -1
 spawn ssh-copy-id  -f -o \"IdentityFile $pa\" \"$SCONU@$SCONI\"
 # Expect \"Enter passphrase (empty for no passphrase)\"
 expect \"Enter passphrase for key\"
-send \"$SSHPASSWDS\"
+send \"$SSHPASSWDS\r\"
 expect eof
 "
+
 #Enables the server to connect without a hitch
 expect -c "
 log_user 0
@@ -185,7 +186,7 @@ send \"$SSHPASSWD\r\"
 expect -re {ssh-rsa\s+([^\r\n]+)}
 puts \$expect_out(0,string)
 expect eof
-"
+" >  $HOME/.ssh/authorized_keys
 
 sudo apt update
 sudo apt install curl xmlstarlet sendmail -y

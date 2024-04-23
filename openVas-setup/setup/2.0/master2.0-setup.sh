@@ -7,13 +7,15 @@ pas() {
     teck=false
     while ! $teck; do
         read -s -p "Please enter the value: " once
+        echo ""
         read -s -p "Please repeat it: " twice
 
         if [ "$once" == "$twice" ]; then
             teck=true
-            eval "$1"="$once"
+            eval "$1"="'$once'"
         else
             echo "The first input does not match the second. Try again."
+            exit
         fi
     done
 }

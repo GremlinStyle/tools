@@ -1,7 +1,22 @@
 #!/bin/bash
 
-text=( "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: " "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: " "\n\e[96m\e[1m[*]\e[0m Please enter a password for the ssh-key generation " "\n\e[96m\e[1m[*]\e[0m Please enter the password of the server identity file file: " "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:" "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:" "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: " "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: " "\n\e[96m\e[1m[*]\e[0m Please enter the email used \e[33mto send reports\e[0m: " "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: " "\n\e[96m\e[1m[*]\e[0m Please type the email used \e[33mto receive reports\e[0m: ")
+text=( "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe username\e[0m of your managment server " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe hostname\e[0m of your managment server " "\n\e[96m\e[5m\e[1m[*]\e[0m password of the ssh-key generation " "\n\e[96m\e[5m\e[1m[*]\e[0m the password of the managment server identity file file " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mfirst port\e[0m of the managment server" "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31msecond port\e[0m of the managment server" "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31m Openvas username\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31mpassword\e[0m for the of Openvas user" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto send reports\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mAppkey\e[0m of the email" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto receive reports\e[0m ")
 an=(SCONU SCONI SSHPASSWD SSHPASSWDS PORT1 PORT2 GVMUSER GVMPASWD FROMAIL APPKEY TOMAIL)
+
+pas() {
+    teck=false
+    while ! $teck; do
+        read -s -p "Please enter the value: " once
+        read -s -p "Please repeat it: " twice
+
+        if [ "$once" == "$twice" ]; then
+            teck=true
+            eval "$1"="$once"
+        else
+            echo "The first input does not match the second. Try again."
+        fi
+    done
+}
 
 echo -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m)"
 read check
@@ -19,12 +34,12 @@ read SCONI
 SSHCON="$SCONU@$SCONI"
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a password for the ssh-key generation "
-read -s SSHPASSWD
+pas SSHPASSWD
 
 
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the password of the server identity file file: "
-read -s SSHPASSWDS
+pas SSHPASSWDS
 
 
 
@@ -61,7 +76,7 @@ echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas use
 read GVMUSER
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: "
-read -s GVMPASWD
+pas GVMPASWD
 
 
 #EMAIL CONFIG
@@ -70,7 +85,7 @@ echo -e "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send report
 read FROMAIL
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
-read APPKEY
+pas APPKEY
 
 echo -e "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
 read TOMAIL
@@ -78,13 +93,19 @@ read TOMAIL
 echo -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the current device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
 passwd
 
+pattern="PAS{1,2}WD|KEY"
+
 echo -e "\n\e[96m\e[1m[*]\e[0m Are these Answers correct?"
 len=${#an[@]}
 for ((i=0; i<len; i++)); do
-    echo -e "\nQuestion $i:"
-    echo -e "${text[$i]}\nAnswer:\t${!an[$i]}"
+    if [[ ${an[$i]} =~ $pattern ]]; then
+        echo -e "${text[$i]} [---]"
+    else
+        echo -e "${text[$i]} [${!an[$i]}]"
+    fi
 done
 
+mkdir -p /root/scripts
 echo -e  "\n\e[96m\e[1m[*]\e[0m Please check if all variables are correct. In case they are correct press \e[32my\e[0m else press \e[31mn\e[0m"
 read check 
 if [ $check == "y" ]; then
@@ -94,14 +115,39 @@ if [ $check == "y" ]; then
     for ((i=0; i<${#an[@]};i++));do echo "${an[$i]}=${!an[$i]}" >> /root/scripts/envar.conf; done
 else
     echo -e "\n\e[96m\e[1m[*]\e[0m  Please answer the question correctly in case they are correct hit enter"
+    
+
     for ((i=0; i<${#an[@]};i++));do
-        echo -e "\nOrginal Answer: ${!an[$i]}${text[$i]}"
-        read inp
-        if [ ${#inp} -gt 1 ];then
-            #echo -e "answer is changed\n"
-            declare ${an[$i]}=$inp
+        if [[ ${an[$i]} =~ $pattern ]]; then
+            echo -e "${text[$i]} [***]"
+            teck=false
+                while ! $teck; do
+                    read -s -p "Please enter the value: " once
+                    echo ""
+                    if [ ${#once} -gt 1 ];then
+                    read -s -p "Please repeat it: " twice
+
+                    if [ "$once" == "$twice" ]; then
+                        teck=true
+                        echo -e "answer is changed\n"
+                        eval "${an[$i]}"="'$once'"
+                    else
+                        echo "\nThe first input does not match the second. Try again."
+                    fi
+                    else
+                        break
+                        echo -e "answer is unchanged\n"
+                    fi
+                done
+        else
+            echo -e "${text[$i]} [${!an[$i]}]"
+            read inp
+            if [ ${#inp} -gt 1 ];then
+                #echo -e "answer is changed\n"
+                declare ${an[$i]}=$inp
             else
-            #echo -e "answer is unchanged\n"
+                echo -e "answer is unchanged\n"
+            fi
         fi
     done
     echo "" > /root/scripts/envar.conf
@@ -115,7 +161,7 @@ fi
 #Enables the server to connect without a hitch
 #ssh "$SCONU@$SCONI" cat .ssh/id_rsa.pub | tee -a $HOME/.ssh/authorized_keys
 
-mkdir -p /root/scripts
+
 chmod 700 /root/scripts
 export SSHCON=$SSHCON
 export PORT1=$PORT1

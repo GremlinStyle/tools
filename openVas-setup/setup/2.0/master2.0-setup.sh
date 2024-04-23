@@ -189,18 +189,12 @@ expect \"Enter file in which to save the key\"
 send \"\r\"
 
 expect {
-    \"Overwrite (y/n)\" {
-        # If \"Overwrite (y/n)\" is encountered, automatically answer \"yes\" (y)
-        send \"y\r\"
-    }
+    \"Overwrite (y/n)\" {send \"y\r\";expect \"Enter passphrase\"}
+    \"Enter passphrase\"
 }
-
-# Expect \"Enter passphrase (empty for no passphrase)\"
-expect \"Enter passphrase\"
 
 # Send the SSH password
 send \"$SSHPASSWD\r\"
-send_user \"$SSHPASSWD\r\"
 # Expect \"Enter same passphrase again\"
 expect \"Enter same passphrase again\"
 

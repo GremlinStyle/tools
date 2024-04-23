@@ -1,47 +1,7 @@
 #!/bin/bash
 
-#for getting the scripts
-sudo apt update
-sudo apt install curl xmlstarlet sendmail -y
-
-SCRIPTPATH=/root/scripts
-
-#START OF SET-VARIBLE 
-
-text=("\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: " "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: " "\n\e[96m\e[1m[*]\e[0m Please enter the ssh key password again for me" "\n\e[96m\e[1m[*]\e[0m Now we will use ssh-copy-id to put the freshly generated key onto the server for which will allow us to connect to the server without any need for passwords or keys\n\n\tPlease Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:" "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:" "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:" "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: " "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: " "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: " "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: " "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: ")
-an=(SCONU SCONI SSHPASSWD pa PORT1 PORT2 GVMUSER GVMPASWD FROMAIL APPKEY TOMAIL)
-
-if [ -e /root/scripts/envar.conf ]; then 
-echo -e "A config File was found we will use this one to speed things up\nIf the Variables a right please hit enter without typing anything"; 
-
-len=$(cat /root/scripts/envar.conf | wc -l)
-for ((i=1; i<=len; i++)); do
-    line=$(sed -n "${i}p" /root/scripts/envar.conf)
-    IFS="="
-    read -ra newarr <<< "$line"
-    echo -e "If the answer is correct please hit enter to proceed otherwise enter the correct answer:${text[$i-1]}\nAnswer found in old config file: ${newarr[1]}\n"
-    read ans
-    if [ ${#ans} -gt 1 ]; then
-    declare ${newarr[0]}=$ans
-    ne="${newarr[0]}=$ans"
-    sed -i "${i}s/.*/${ne}/" /root/scripts/envar.conf
-    echo -e "answer is changed\n"
-    else
-    echo "answer is unchanged\n"
-    fi
-done
-if [ $i -le ${#text[@]} ]; then
-for ((; i <= ${#text[@]}; i++));do
-echo -e "${text[$i-1]}
-read ants
-declare ${an[$i-1]}=$ants
-echo "${an[$i-1]}=$ants" >> /root/scripts/envar.conf
-done
-fi
-else
-#SSH CONFIG
-
-#check if pem file is there cause how do you want to get it ? USB / http anyway it needs to be there 
+text=( "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: " "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: " "\n\e[96m\e[1m[*]\e[0m Please enter a password for the ssh-key generation " "\n\e[96m\e[1m[*]\e[0m Please enter the password of the server identity file file: " "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:" "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:" "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: " "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: " "\n\e[96m\e[1m[*]\e[0m Please enter the email used \e[33mto send reports\e[0m: " "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: " "\n\e[96m\e[1m[*]\e[0m Please type the email used \e[33mto receive reports\e[0m: ")
+an=(SCONU SCONI SSHPASSWD SSHPASSWDS PORT1 PORT2 GVMUSER GVMPASWD FROMAIL APPKEY TOMAIL)
 
 echo -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m)"
 read check
@@ -50,26 +10,23 @@ if [ $check == y ]; then echo "Ingore: We will proceed"; else echo "Rude: then p
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: "
 read SCONU
-echo "SCONU=$SCONU" >> /root/scripts/envar.conf
+
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: "
 read SCONI
-echo "SCONI=$SCONI" >> /root/scripts/envar.conf
+
 
 SSHCON="$SCONU@$SCONI"
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please leave the \e[31mpassword field NOT empty\e[0m at the ssh-key generation but if you want everything else: "
-
-ssh-keygen -t rsa
-
-#Enables the Kali Device to connect without a hitch to the server
-ssh-copy-id  -f -o "IdentityFile $pa" "$SCONU@$SCONI"
-#Enables the server to connect without a hitch
-ssh "$SCONU@$SCONI" cat .ssh/id_rsa.pub | tee -a $HOME/.ssh/authorized_keys
-
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the ssh key password again for me"
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a password for the ssh-key generation "
 read -s SSHPASSWD
-echo "SSHPASSWD=$SSHPASSWD" >> /root/scripts/envar.conf
+
+
+
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the password of the server identity file file: "
+read -s SSHPASSWDS
+
+
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Now we will use ssh-copy-id to put the freshly generated key onto the server for which will allow us to connect to the server without any need for passwords or keys\n\n\tPlease Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:"
 read pa
@@ -88,47 +45,75 @@ for i in {1..3}; do
     fi
 done
 
-
-
-
 #SSH config for tunnel:
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:"
 read PORT1
-echo "PORT1=$PORT1" >> /root/scripts/envar.conf
+
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:"
 read PORT2
-echo "PORT2=$PORT2" >> /root/scripts/envar.conf
+
 
 #OPENVAS / GVM CONFIG
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: "
 read GVMUSER
-echo "GVMUSER=$GVMUSER" >> /root/scripts/envar.conf
+
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: "
 read -s GVMPASWD
-echo "GVMPASWD=$GVMPASWD" >> /root/scripts/envar.conf
+
 
 #EMAIL CONFIG
 
 echo -e "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: "
 read FROMAIL
-echo "FROMAIL=$FROMAIL" >> /root/scripts/envar.conf
+
 echo -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
 read APPKEY
-echo "FROMAIL=$FROMAIL" >> /root/scripts/envar.conf
+
 echo -e "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
 read TOMAIL
-echo "FROMAIL=$FROMAIL" >> /root/scripts/envar.conf
+
+echo -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the current device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
+passwd
+
+echo -e "\n\e[96m\e[1m[*]\e[0m Are these Answers correct?"
+len=${#an[@]}
+for ((i=0; i<len; i++)); do
+    echo -e "\nQuestion $i:"
+    echo -e "${text[$i]}\nAnswer:\t${!an[$i]}"
+done
+
+echo -e  "\n\e[96m\e[1m[*]\e[0m Please check if all variables are correct. In case they are correct press \e[32my\e[0m else press \e[31mn\e[0m"
+read check 
+if [ $check == "y" ]; then
+    echo -e "We proceed with the installation"
+    #echo -e "SCONU=$SCONU\nSCONI=$SCONI\nSSHPASSWD=$SSHPASSWD\nPORT1=$PORT1\nPORT2=$PORT2\nGVMUSER=$GVMUSER\nGVMPASWD=$GVMPASWD\nFROMAIL=$FROMAIL\nAPPKEY=$APPKEY\nTOMAIL=$TOMAIL" > /root/scripts/envar.conf
+    echo "" > /root/scripts/envar.conf
+    for ((i=0; i<${#an[@]};i++));do echo "${an[$i]}=${!an[$i]}" >> /root/scripts/envar.conf; done
+else
+    echo -e "\n\e[96m\e[1m[*]\e[0m  Please answer the question correctly in case they are correct hit enter"
+    for ((i=0; i<${#an[@]};i++));do
+        echo -e "\nOrginal Answer: ${!an[$i]}${text[$i]}"
+        read inp
+        if [ ${#inp} -gt 1 ];then
+            #echo -e "answer is changed\n"
+            declare ${an[$i]}=$inp
+            else
+            #echo -e "answer is unchanged\n"
+        fi
+    done
+    echo "" > /root/scripts/envar.conf
+    for ((i=0; i<${#an[@]};i++));do echo "${an[$i]}=${!an[$i]}" >> /root/scripts/envar.conf; done
+    #echo -e "SCONU=$SCONU\nSCONI=$SCONI\nSSHPASSWD$SSHPASSWD\nPORT1=$PORT1\nPORT2=$PORT2\nGVMUSER=$GVMUSER\nGVMPASWD=$GVMPASWD\nFROMAIL=$FROMAIL\nAPPKEY=$APPKEY\nTOMAIL=$TOMAIL" > /root/scripts/envar.conf
 fi
 
-
-
+#NEEDS USER INPUT MADE SCRIPT WITH EXPECT FOR USER
 #Enables the Kali Device to connect without a hitch to the server
-ssh-copy-id  -f -o "IdentityFile $pa" "$SCONU@$SCONI"
+#ssh-copy-id  -f -o "IdentityFile $pa" "$SCONU@$SCONI"
 #Enables the server to connect without a hitch
-ssh "$SCONU@$SCONI" cat .ssh/id_rsa.pub | tee -a $HOME/.ssh/authorized_keys
+#ssh "$SCONU@$SCONI" cat .ssh/id_rsa.pub | tee -a $HOME/.ssh/authorized_keys
 
 mkdir -p /root/scripts
 chmod 700 /root/scripts
@@ -141,6 +126,69 @@ export APPKEY=$APPKEY
 export TOMAIL=$TOMAIL
 export FROMAIL=$FROMAIL
 export SSHPASSWD=$SSHPASSWD
+export SSHPASSWDS=$SSHPASSWDS
+
+expect -c "
+# Set timeout to -1 to wait indefinitely
+set timeout -1
+
+# Spawn ssh-keygen
+spawn ssh-keygen -t rsa
+
+# Expect \"Enter file in which to save the key\"
+expect \"Enter file in which to save the key\"
+
+# Send a carriage return to accept the default file path
+send \"\r\"
+
+expect {
+    \"Overwrite (y/n)\" {
+        # If \"Overwrite (y/n)\" is encountered, automatically answer \"yes\" (y)
+        send \"y\r\"
+    }
+}
+
+# Expect \"Enter passphrase (empty for no passphrase)\"
+expect \"Enter passphrase\"
+
+# Send the SSH password
+send \"$SSHPASSWD\r\"
+send_user \"$SSHPASSWD\r\"
+# Expect \"Enter same passphrase again\"
+expect \"Enter same passphrase again\"
+
+# Send the SSH password again
+send \"$SSHPASSWD\r\"
+
+# Expect end of file
+expect eof
+"
+
+#Enables the Kali Device to connect without a hitch to the server
+expect -c "
+# Set timeout to -1 to wait indefinitely
+set timeout -1
+
+# Spawn ssh-keygen
+spawn ssh-copy-id  -f -o \"IdentityFile $pa\" \"$SCONU@$SCONI\"
+# Expect \"Enter passphrase (empty for no passphrase)\"
+expect \"Enter passphrase for key\"
+send \"$SSHPASSWDS\"
+expect eof
+"
+#Enables the server to connect without a hitch
+expect -c "
+log_user 0
+spawn -noecho ssh $SCONU@$SCONI cat .ssh/id_rsa.pub
+expect \"Enter passphrase for key\"
+send \"$SSHPASSWD\r\"
+expect -re {ssh-rsa\s+([^\r\n]+)}
+puts \$expect_out(0,string)
+expect eof
+"
+
+sudo apt update
+sudo apt install curl xmlstarlet sendmail -y
 
 #START OF INSTALLATION
 # of openvas for debian according to ("https://greenbone.github.io/docs/latest/22.4/source-build/index.html") with changes for prompted user and password
@@ -180,5 +228,3 @@ fi
 
 #IMPORTANT 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the current device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
-passwd

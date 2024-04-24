@@ -211,10 +211,10 @@ else
             echo -e "${text[$i]} [***]"
             teck=false
                 while ! $teck; do
-                    echo "Please enter the value: ";hidepas;once=$int
+                    echo -n "Please enter the value: ";hidepas;once=$int
                     echo ""
                     if [ ${#once} -gt 1 ];then
-                    echo "Please repeat it: "; hidepas;twice=$int
+                    echo -n "Please repeat it: "; hidepas;twice=$int
 
                     if [ "$once" == "$twice" ]; then
                         teck=true

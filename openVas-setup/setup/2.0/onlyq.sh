@@ -2,17 +2,78 @@
 
 text=( "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe username\e[0m of your managment server " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe hostname\e[0m of your managment server " "\n\e[96m\e[5m\e[1m[*]\e[0m password of the ssh-key generation " "\n\e[96m\e[5m\e[1m[*]\e[0m the password of the managment server identity file file " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mfirst port\e[0m of the managment server" "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31msecond port\e[0m of the managment server" "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31m Openvas username\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31mpassword\e[0m for the of Openvas user" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto send reports\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mAppkey\e[0m of the email" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto receive reports\e[0m ")
 an=(SCONU SCONI SSHPASSWD SSHPASSWDS PORT1 PORT2 GVMUSER GVMPASWD FROMAIL APPKEY TOMAIL)
+check_pas() {
+    local password="$1"
+
+    # Define criteria for a strong password
+    local min_length=8
+    local has_lowercase="[a-z]"
+    local has_uppercase="[A-Z]"
+    local has_digit="[0-9]"
+    local has_special_char="[\!\"§\$\%\&\/\(\)=?\`´*+~#'\-_\.,;.:<>\|\^°\{\}\\ß@€µ]"
+
+    # Check if the password meets the criteria
+    if [ ${#password} -lt $min_length ]; then
+        echo "Password is too short. It must be at least $min_length characters long."
+        return 1
+    fi
+
+    if ! [[ $password =~ $has_lowercase ]]; then
+        echo "Password must contain at least one lowercase letter."
+        return 1
+    fi
+
+    if ! [[ $password =~ $has_uppercase ]]; then
+        echo "Password must contain at least one uppercase letter."
+        return 1
+    fi
+
+    if ! [[ $password =~ $has_digit ]]; then
+        echo "Password must contain at least one digit."
+        return 1
+    fi
+
+    if ! [[ $password =~ $has_special_char ]]; then
+        echo "Password must contain at least one special character."
+        return 1
+    fi
+
+    # Password meets all criteria
+    echo "Password is strong."
+    return 0
+}
+
+hidepas(){
+int=""
+while IFS= read -r -s -n1 char;do
+if [[ $char == $'\0' || $char == $'\n' || $char == $'\r' ]]; then
+	break
+elif [[ $char == $'\177' ]]; then
+	int="${int%?}"
+        echo -ne "\b \b"
+else
+echo -n "*"
+fi
+int+=$char
+done
+}
 
 pas() {
     teck=false
     while ! $teck; do
-        read -s -p "Please enter the value: " once
+        echo "Please enter the value: ";hidepas;once=$int
         echo ""
-        read -s -p "Please repeat it: " twice
+        echo "Please repeat it: "; hidepas;twice=$int
 
         if [ "$once" == "$twice" ]; then
-            teck=true
-            eval "$1"="'$once'"
+            if [[ $(check_pass "$once") == "Password is strong." ]];then 
+                echo -e "\nA strong password"
+                teck=true
+                eval "$1"="'$once'"
+            else
+                echo -e "\nPassword to weak\t\n$(check_pass "$once")"
+            fi
+            
         else
             echo "The first input does not match the second. Try again."
         fi
@@ -22,7 +83,7 @@ pas() {
 echo -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m)"
 read check
 
-if [ $check == y ]; then echo "Ingore: We will proceed"; else echo "Rude: then please get the keyfile to disk";exit; fi;
+if [ $check == y ]; then echo "Ignore: We will proceed"; else echo "Rude: then please get the keyfile to disk";exit; fi;
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: "
 read SCONU
@@ -63,11 +124,11 @@ done
 
 #SSH config for tunnel:
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:"
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m (starting at 50000 and higher) of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:"
 read PORT1
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:"
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m (starting at 50000 and higher) of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:"
 read PORT2
 
 
@@ -107,11 +168,11 @@ for ((i=0; i<len; i++)); do
     fi
 done
 
-#mkdir -p /root/scripts
 echo -e  "\n\e[96m\e[1m[*]\e[0m Please check if all variables are correct. In case they are correct press \e[32my\e[0m else press \e[31mn\e[0m"
 read check 
 if [ $check == "y" ]; then
     echo -e "We proceed with the installation"
+    #echo -e "SCONU=$SCONU\nSCONI=$SCONI\nSSHPASSWD=$SSHPASSWD\nPORT1=$PORT1\nPORT2=$PORT2\nGVMUSER=$GVMUSER\nGVMPASWD=$GVMPASWD\nFROMAIL=$FROMAIL\nAPPKEY=$APPKEY\nTOMAIL=$TOMAIL" > /root/scripts/envar.conf
     #echo "" > /root/scripts/envar.conf
     #for ((i=0; i<${#an[@]};i++));do echo "${an[$i]}=${!an[$i]}" >> /root/scripts/envar.conf; done
 else
@@ -151,6 +212,7 @@ else
             fi
         fi
     done
-    echo "" > /root/scripts/envar.conf
+    #echo "" > /root/scripts/envar.conf
     #for ((i=0; i<${#an[@]};i++));do echo "${an[$i]}=${!an[$i]}" >> /root/scripts/envar.conf; done
+    #echo -e "SCONU=$SCONU\nSCONI=$SCONI\nSSHPASSWD$SSHPASSWD\nPORT1=$PORT1\nPORT2=$PORT2\nGVMUSER=$GVMUSER\nGVMPASWD=$GVMPASWD\nFROMAIL=$FROMAIL\nAPPKEY=$APPKEY\nTOMAIL=$TOMAIL" > /root/scripts/envar.conf
 fi

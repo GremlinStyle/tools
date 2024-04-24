@@ -69,14 +69,16 @@ while ! $tef;do
         if [ $PORT1 == $PORT2 ];then
             echo "first port and second port are the same which should not be"
         else
+            tefck=true
             for pp in ${ppp[@]};do
                 if [ ${!port} == $pp ];then
                     echo -e "Port already in usage"
-                else
-
-                    tef=true
+                    tefck=false    
                 fi
             done
+            if [ $tefck == true ]; then
+            tef=true
+            fi
         fi
     else
         uio=""

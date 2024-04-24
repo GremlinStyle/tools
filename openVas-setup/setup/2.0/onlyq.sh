@@ -80,6 +80,31 @@ pas() {
     done
 }
 
+check_port(){
+local uio="$2"
+local port="$1"
+tef=false
+while ! $tef;do
+    if [ ${#uio} -lt 1 ];then
+        read -p "Enter the Port: " p1
+    else
+        p1="$uio"
+    fi
+    if (( $p1 >= 49152 && $p1 <= 65535 )); then
+        eval "$port"="$p1"
+        if [ $PORT1 == $PORT2 ];then
+            echo "first port and second port are the same which should not be"
+            
+        else
+            tef=true
+        fi
+    else
+        uio=""
+        echo "Entered Port is not within range"
+    fi
+done
+}
+
 echo -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m)"
 read check
 
@@ -124,12 +149,12 @@ done
 
 #SSH config for tunnel:
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m (starting at 50000 and higher) of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:"
-read PORT1
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m (between 49152 and 65535) of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:"
+check_port PORT1
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m (starting at 50000 and higher) of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:"
-read PORT2
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m (between 49152 and 65535) of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:"
+check_port PORT2
 
 
 #OPENVAS / GVM CONFIG
@@ -184,10 +209,10 @@ else
             echo -e "${text[$i]} [***]"
             teck=false
                 while ! $teck; do
-                    read -s -p "Please enter the value: " once
+                    echo "Please enter the value: ";hidepas;once=$int
                     echo ""
                     if [ ${#once} -gt 1 ];then
-                    read -s -p "Please repeat it: " twice
+                    echo "Please repeat it: "; hidepas;twice=$int
 
                     if [ "$once" == "$twice" ]; then
                         teck=true
@@ -201,6 +226,16 @@ else
                         echo -e "answer is unchanged\n"
                     fi
                 done
+        elif [[${an[$i]} =~ "PORT"]];then
+            echo -e "${text[$i]} [${!an[$i]}]"
+            read -p "Enter the Port: " portint
+            if [ ${portint} -gt 0 ];then
+                check_port ${an[$i]} $portint
+                echo -e "answer is changed\n"
+            else
+                echo -e "answer is unchanged\n"
+            fi
+
         else
             echo -e "${text[$i]} [${!an[$i]}]"
             read inp

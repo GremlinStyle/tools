@@ -284,7 +284,7 @@ else
                         echo -e "answer is unchanged\n"
                     fi
                 done
-        elif [[ "${an[$i]}" =~ "PORT"]];then
+        elif [[ "${an[$i]}" =~ "PORT" ]];then
             echo -e "${text[$i]} [${!an[$i]}]"
             read -p "Enter the Port: " portint
             if [ ${portint} -gt 0 ];then

@@ -3,7 +3,7 @@
 text=( "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe username\e[0m of your managment server " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe hostname\e[0m of your managment server " "\n\e[96m\e[5m\e[1m[*]\e[0m password of the ssh-key generation " "\n\e[96m\e[5m\e[1m[*]\e[0m the password of the managment server identity file file " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mfirst port\e[0m of the managment server" "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31msecond port\e[0m of the managment server" "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31m Openvas username\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31mpassword\e[0m for the of Openvas user" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto send reports\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mAppkey\e[0m of the email" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto receive reports\e[0m ")
 an=(SCONU SCONI SSHPASSWD SSHPASSWDS PORT1 PORT2 GVMUSER GVMPASWD FROMAIL APPKEY TOMAIL)
 
-check_pass() {
+check_pass_old() {
     local password="$1"
 
     # Define criteria for a strong password
@@ -42,6 +42,47 @@ check_pass() {
     # Password meets all criteria
     echo "Password is strong."
     return 0
+}
+
+check_port(){
+local uio="$2"
+local port="$1"
+tef=false
+
+ppp=$(expect -c "
+set timeout -1
+spawn ssh $SCONU@$SCONI netstat -tuna
+expect \"Enter passphrase for key\"
+send \"$SSHPASSWD\r\"
+expect eof
+" | awk '{print $4}' | grep -oE ':[0-9]+$' | cut -d ':' -f 2 | sort -n | uniq)
+
+while ! $tef;do
+    if [ ${#uio} -lt 1 ];then
+        read -p "Enter the Port: " p1
+    else
+        p1="$uio"
+    fi
+    if (( $p1 >= 49152 && $p1 <= 65535 )); then
+        eval "$port"="$p1"
+
+        if [ $PORT1 == $PORT2 ];then
+            echo "first port and second port are the same which should not be"
+        else
+            for pp in ${ppp[@]};do
+                if [ ${!port} == $pp ];then
+                    echo -e "Port already in usage"
+                else
+
+                    tef=true
+                fi
+            done
+        fi
+    else
+        uio=""
+        echo "Entered Port is not within range"
+    fi
+done
 }
 
 hidepas() {

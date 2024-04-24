@@ -104,10 +104,10 @@ hidepas() {
 }
 
 pas() {
-    poi="$1"
+    poi="$2"
     teck=false
     while ! $teck; do
-        if [[ ${#poi} -gt 2 ];then
+        if [ ${#poi} -gt 2 ];then
             echo -n "Please enter the value: ";hidepas;once=$int
             echo ""
             echo -n "Please repeat it: "; hidepas;twice=$int 
@@ -230,7 +230,7 @@ echo -e "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send report
 read FROMAIL
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
-echo -n "Enter the Appkey: ";hidepas APPKEY
+echo -n "Enter the Appkey: ";hidepas APPKEY 123
 echo ""
 
 echo -e "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "

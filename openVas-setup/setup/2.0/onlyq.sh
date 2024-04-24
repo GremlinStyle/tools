@@ -43,19 +43,20 @@ check_pas() {
     return 0
 }
 
-hidepas(){
-int=""
-while IFS= read -r -s -n1 char;do
-if [[ $char == $'\0' || $char == $'\n' || $char == $'\r' ]]; then
-	break
-elif [[ $char == $'\177' ]]; then
-	int="${int%?}"
-        echo -ne "\b \b"
-else
-echo -n "*"
-fi
-int+=$char
-done
+hidepas() {
+    int=""
+    while IFS= read -r -s -n1 char; do
+        if [[ $char == $'\0' || $char == $'\n' || $char == $'\r' ]]; then
+            break
+        elif [[ $char == $'\177' || $char == $'\b' ]]; then  # Try '\b' for Backspace
+            int="${int%?}"
+            echo -ne "\b \b"
+        else
+            echo -n "*"
+            int+="$char"
+        fi
+    done
+    echo
 }
 
 pas() {

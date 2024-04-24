@@ -63,9 +63,9 @@ hidepas() {
 pas() {
     teck=false
     while ! $teck; do
-        echo "Please enter the value: ";hidepas;once=$int
+        echo -n "Please enter the value: ";hidepas;once=$int
         echo ""
-        echo "Please repeat it: "; hidepas;twice=$int
+        echo -n "Please repeat it: "; hidepas;twice=$int
 
         if [ "$once" == "$twice" ]; then
             if [[ $(check_pass "$once") == "Password is strong." ]];then 

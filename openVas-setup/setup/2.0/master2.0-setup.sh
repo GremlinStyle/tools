@@ -3,7 +3,7 @@
 text=( "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe username\e[0m of your managment server " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe hostname\e[0m of your managment server " "\n\e[96m\e[5m\e[1m[*]\e[0m password of the ssh-key generation " "\n\e[96m\e[5m\e[1m[*]\e[0m the password of the managment server identity file file " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mfirst port\e[0m of the managment server" "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31msecond port\e[0m of the managment server" "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31m Openvas username\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31mpassword\e[0m for the of Openvas user" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto send reports\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mAppkey\e[0m of the email" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto receive reports\e[0m ")
 an=(SCONU SCONI SSHPASSWD SSHPASSWDS PORT1 PORT2 GVMUSER GVMPASWD FROMAIL APPKEY TOMAIL)
 
-check_pass_old() {
+check_pass() {
     local password="$1"
 
     # Define criteria for a strong password
@@ -11,7 +11,7 @@ check_pass_old() {
     local has_lowercase="[a-z]"
     local has_uppercase="[A-Z]"
     local has_digit="[0-9]"
-    local has_special_char="[\!\"§\$\%\&\/\(\)=?\`´*+~#'\-_\.,;.:<>\|\^°\{\}\\ß@€µ]"
+    local has_special_char="[\!\"§\$\%\&\/\(\)=?\`´*+~#'\-_\.,;.:<>\|\^°\{\}\\ß@€µ]|[\{-µ]|[€])|([\!-\/]|[:-@]|[\[-\`]|[{-µ]|[€])"
 
     # Check if the password meets the criteria
     if [ ${#password} -lt $min_length ]; then
@@ -43,6 +43,7 @@ check_pass_old() {
     echo "Password is strong."
     return 0
 }
+
 check_port(){
 local uio="$2"
 local port="$1"
@@ -123,7 +124,7 @@ pas() {
     done
 }
 
-check_port(){
+check_port_old(){
 local uio="$2"
 local port="$1"
 tef=false

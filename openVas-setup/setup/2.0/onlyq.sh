@@ -44,7 +44,7 @@ check_pass() {
     return 0
 }
 
-check_port(){
+check_port_new_need_some_working_on_due_sshkeygen_happening_later(){
 local uio="$2"
 local port="$1"
 tef=false
@@ -125,7 +125,7 @@ pas() {
     done
 }
 
-check_port_old(){
+check_port(){
 local uio="$2"
 local port="$1"
 tef=false

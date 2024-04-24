@@ -150,7 +150,7 @@ while ! $tef;do
     fi
     if (( $p1 >= 49152 && $p1 <= 65535 )); then
         eval "$port"="$p1"
-        if [ $PORT1 == $PORT2 ];then
+        if [ "$PORT1" == "$PORT2" ];then
             echo "first port and second port are the same which should not be"
             
         else

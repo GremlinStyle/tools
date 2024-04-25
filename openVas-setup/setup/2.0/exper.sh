@@ -150,7 +150,7 @@ pas() {
                     eval "$1"="'$once'"
                     echo -e "\n\e[92m\e[5m[*]OK\e[0m"
                 #else
-                    #echo -e "Password/passphrase already in usage\t$i"
+                    #echo -e "Password/passphrase already in usage"
                 fi
             else
                 echo -e "\nPassword to weak"

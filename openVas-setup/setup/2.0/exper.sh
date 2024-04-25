@@ -18,7 +18,7 @@ check_host() {
         echo -e "\n\e[92m\e[5m[*]OK\e[0m"
         eval "SCONU"="$host"
     else
-        read -ep "Host isn't reachable. Try again" host
+        read -ep "Host isn't reachable. Try again: " host
     fi
     done
 }

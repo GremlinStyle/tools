@@ -1,6 +1,6 @@
 #!/bin/bash
 
-text=( "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe username\e[0m of your managment server " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe hostname\e[0m of your managment server " "\n\e[96m\e[5m\e[1m[*]\e[0m password of the ssh-key generation " "\n\e[96m\e[5m\e[1m[*]\e[0m the password of the managment server identity file file " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mfirst port\e[0m of the managment server" "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31msecond port\e[0m of the managment server" "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31m Openvas username\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31mpassword\e[0m for the of Openvas user" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto send reports\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mAppkey\e[0m of the email" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto receive reports\e[0m ")
+text=( "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe username\e[0m of your management server " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe hostname or IP address\e[0m of your management server " "\n\e[96m\e[5m\e[1m[*]\e[0m passphrase of the ssh-key generation " "\n\e[96m\e[5m\e[1m[*]\e[0m the passphrase of the management server identity file file " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mfirst port\e[0m of the management server" "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31msecond port\e[0m of the management server" "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31m Openvas username\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31mpassword\e[0m for the of Openvas user" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto send reports\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mAppkey\e[0m of the email" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto receive reports\e[0m ")
 an=(SCONU SCONI SSHPASSWD SSHPASSWDS PORT1 PORT2 GVMUSER GVMPASWD FROMAIL APPKEY TOMAIL)
 
 # usefull commands
@@ -21,27 +21,27 @@ check_pass() {
 
     # Check if the password meets the criteria
     if [ ${#password} -lt $min_length ]; then
-        echo "Password is too short. It must be at least $min_length characters long."
+        #echo "Password is too short. It must be at least $min_length characters long."
         return 1
     fi
 
     if ! [[ $password =~ $has_lowercase ]]; then
-        echo "Password must contain at least one lowercase letter."
+        #echo "Password must contain at least one lowercase letter."
         return 1
     fi
 
     if ! [[ $password =~ $has_uppercase ]]; then
-        echo "Password must contain at least one uppercase letter."
+        #echo "Password must contain at least one uppercase letter."
         return 1
     fi
 
     if ! [[ $password =~ $has_digit ]]; then
-        echo "Password must contain at least one digit."
+        #echo "Password must contain at least one digit."
         return 1
     fi
 
     if ! [[ $password =~ $has_special_char ]]; then
-        echo "Password must contain at least one special character."
+        #echo "Password must contain at least one special character."
         return 1
     fi
 
@@ -121,14 +121,8 @@ pas() {
     while ! $teck; do
         if [ ${#poi} -gt 2 ];then
             read -e  -s -p "Please enter the value: " once
-            echo""
-            read -e  -s -p "Please repeat it: " twice
-            if [ "$once" == "$twice" ]; then
-                teck=true
-                eval "$1"="'$once'" 
-            else
-                echo "The first input does not match the second. Try again."
-            fi          
+            teck=true
+            eval "$1"="'$once'"          
         else
         read -e  -s -p "Please enter the value: " once
         echo""
@@ -137,10 +131,28 @@ pas() {
         if [ "$once" == "$twice" ]; then
             if [[ $(check_pass "$once") == "Password is strong." ]];then 
                 echo -e "\nA strong password"
-                teck=true
-                eval "$1"="'$once'"
+                pas_list=(SSHPASSWD SSHPASSWDS GVMPASWD)
+                tmp_list=()
+                for i in ${pas_list[@]};do
+                    if [[ "$1" != "$i" ]];then
+                        tmp_list+=("$i")
+                    fi
+                done
+                tteck=true
+                for i in ${tmp_list[@]};do
+                    if [ "$once" == "${!i}" ];then
+                        echo -e "Password/passphrase already in usage"
+                        tteck=false
+                    fi
+                done
+                if [ $tteck == true ];then
+                    teck=true
+                    eval "$1"="'$once'"
+                    echo -e "\n\e[92m\e[5m[*]OK\e[0m"
+                fi
             else
-                echo -e "\nPassword to weak\t\n$(check_pass "$once")"
+                echo -e "\nPassword to weak"
+                break
             fi
             
         else
@@ -166,10 +178,12 @@ while ! $tef;do
     if (( $p1 >= 49152 && $p1 <= 65535 )); then
         eval "$port"="$p1"
         if [ "$PORT1" == "$PORT2" ];then
+            uio=""
             echo "first port and second port are the same which should not be"
             
         else
             tef=true
+            echo -e "\n\e[92m\e[5m[*]OK\e[0m"
         fi
     else
         uio=""
@@ -182,29 +196,49 @@ while ! $tef;do
 done
 }
 
-read -ep $'\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m): ' check
+check_mail() {
+local email_regex='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+mail="$1"
+emailtext="$2"
+
+read -ep "$(echo -e $emailtext) " email
+tmail=false
+while ! $tmail;do
+    # Check if the email matches the pattern
+    if [[ $email =~ $email_regex ]]; then
+        eval "$mail"="$email"
+        echo -e "\n\e[92m\e[5m[*]OK\e[0m"
+        tmail=true
+    else
+        echo "Invalid email address: $email"
+        read -ep "Please enter the email again: " email
+    fi
+done
+}
+
+read -ep $'\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the management server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m): ' check
 
 if [ $check == y ]; then echo "Ignore: We will proceed"; else echo "Rude: then please get the keyfile to disk";exit; fi;
 
-read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: ' SCONU
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your management server: ' SCONU
 
 
-read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: ' SCONI
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname or IP address\e[0m of your management server: ' SCONI
 
 
 SSHCON="$SCONU@$SCONI"
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a password for the ssh-key generation "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a passphrase for the ssh-key generation "
 pas SSHPASSWD
 echo ""
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the password of the server identity file "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the passphrase of the management server identity file "
 pas SSHPASSWDS
 echo ""
 
 
-read -ep $'\n\e[96m\e[1m[*]\e[0m Please Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m: ' pa
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mmanagement server\e[0m: ' pa
 
 for i in {1..3}; do
     if file $pa | grep -qiP "key"; then
@@ -222,11 +256,11 @@ done
 
 #SSH config for tunnel:
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m (between 49152 and 65535) of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:"
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m (between 49152 and 65535) of the management server which will be used to tunnel \e[32mssh\e[0m to the management server for remote access indepedant of it's network properties:"
 check_port PORT1
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m (between 49152 and 65535) of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:"
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m (between 49152 and 65535) of the management server which will be used to tunnel the \e[32mWebpage\e[0m to the management server for accessing the webpage on the management server:"
 check_port PORT2
 
 
@@ -240,16 +274,19 @@ echo ""
 
 #EMAIL CONFIG
 
-read -ep $'\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: ' FROMAIL
+check_mail FROMAIL '\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m:'
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
 pas APPKEY 123
 echo ""
 
-read -ep $'\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: ' TOMAIL
+check_mail TOMAIL '\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: '
 
-echo -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the current device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
+echo -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the root device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
 passwd
+
+echo -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the $SUDO_USER device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
+sudo -u $SUDO_USER passwd 
 
 pattern="PAS{1,2}WD|KEY"
 

@@ -297,7 +297,8 @@ else
                 echo -e "answer is unchanged\n"
             fi
         else
-            read -ep "$(echo -e ${text[$i]} [${!an[$i]}])"  inp
+            echo -e ${text[$i]} [${!an[$i]}]
+            read -ep "Input: "  inp
             if [ ${#inp} -gt 1 ];then
                 #echo -e "answer is changed\n"
                 declare ${an[$i]}=$inp

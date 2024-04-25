@@ -263,6 +263,8 @@ for ((i=0; i<len; i++)); do
     fi
 done
 
+#mkdir -p /root/scripts
+
 read -ep $'\n\e[96m\e[1m[*]\e[0m Please check if all variables are correct. In case they are correct press \e[32my\e[0m else press \e[31mn\e[0m: ' check 
 if [ $check == "y" ]; then
     echo -e "We proceed with the installation"

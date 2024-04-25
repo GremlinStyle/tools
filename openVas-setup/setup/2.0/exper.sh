@@ -196,6 +196,26 @@ while ! $tef;do
 done
 }
 
+check_mail() {
+local email_regex='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+mail="$1"
+emailtext="$2"
+
+read -ep "$(echo -e $emailtext) " email
+tmail=false
+while ! $tmail;do
+    # Check if the email matches the pattern
+    if [[ $email =~ $email_regex ]]; then
+        eval "$mail"="$email"
+        echo -e "\n\e[92m\e[5m[*]OK\e[0m"
+        tmail=true
+    else
+        echo "Invalid email address: $email"
+        read -ep "Please enter the email again: " email
+    fi
+done
+}
+
 read -ep $'\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the management server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m): ' check
 
 if [ $check == y ]; then echo "Ignore: We will proceed"; else echo "Rude: then please get the keyfile to disk";exit; fi;
@@ -254,13 +274,13 @@ echo ""
 
 #EMAIL CONFIG
 
-read -ep $'\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: ' FROMAIL
+check_mail FROMAIL '\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m:'
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
 pas APPKEY 123
 echo ""
 
-read -ep $'\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: ' TOMAIL
+check_mail TOMAIL '\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: '
 
 echo -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the root device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
 passwd

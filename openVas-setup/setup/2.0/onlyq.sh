@@ -170,32 +170,32 @@ while ! $tef;do
 done
 }
 
-echo -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m)"
+echo -n -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m)"
 read check
 
 if [ $check == y ]; then echo "Ignore: We will proceed"; else echo "Rude: then please get the keyfile to disk";exit; fi;
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: "
+echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: "
 read SCONU
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: "
+echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: "
 read SCONI
 
 
 SSHCON="$SCONU@$SCONI"
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a password for the ssh-key generation "
+echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter a password for the ssh-key generation "
 pas SSHPASSWD
 echo ""
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the password of the server identity file "
+echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter the password of the server identity file "
 pas SSHPASSWDS
 echo ""
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:"
+echo -n -e "\n\e[96m\e[1m[*]\e[0m Please Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:"
 read pa
 
 for i in {1..3}; do
@@ -214,36 +214,36 @@ done
 
 #SSH config for tunnel:
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m (between 49152 and 65535) of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:"
+echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m (between 49152 and 65535) of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:"
 check_port PORT1
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m (between 49152 and 65535) of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:"
+echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m (between 49152 and 65535) of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:"
 check_port PORT2
 
 
 #OPENVAS / GVM CONFIG
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: "
+echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: "
 read GVMUSER
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: "
+echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: "
 pas GVMPASWD
 echo ""
 
 #EMAIL CONFIG
 
-echo -e "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: "
+echo -n -e "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: "
 read FROMAIL
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
+echo -n -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
 pas APPKEY 123
 echo ""
 
-echo -e "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
+echo -n -e "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
 read TOMAIL
 
-echo -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the current device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
+echo -n -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the current device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
 passwd
 
 pattern="PAS{1,2}WD|KEY"
@@ -266,7 +266,7 @@ if [ $check == "y" ]; then
     #echo "" > /root/scripts/envar.conf
     #for ((i=0; i<${#an[@]};i++));do echo "${an[$i]}=${!an[$i]}" >> /root/scripts/envar.conf; done
 else
-    echo -e "\n\e[96m\e[1m[*]\e[0m  Please answer the question correctly in case they are correct hit enter"
+    echo -n -e "\n\e[96m\e[1m[*]\e[0m  Please answer the question correctly in case they are correct hit enter"
     
 
     for ((i=0; i<${#an[@]};i++));do

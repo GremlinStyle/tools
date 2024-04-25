@@ -63,7 +63,7 @@ expect eof
 
 while ! $tef;do
     if [ ${#uio} -lt 1 ];then
-        read -p "Enter the Port: " p1
+        read -e  -p "Enter the Port: " p1
     else
         p1="$uio"
     fi
@@ -76,7 +76,7 @@ while ! $tef;do
             tefck=true
             for pp in ${ppp[@]};do
                 if [ ${!port} == $pp ];then
-                    echo -e "Port already in usage"
+                    echo -e "Port alread -e y in usage"
                     tefck=false    
                 fi
             done
@@ -95,7 +95,7 @@ done
 #Not In Usage
 hidepas() {
     int=""
-    while IFS= read -r -s -n1 char; do
+    while IFS= read -e  -r -s -n1 char; do
         if [[ $char == $'\0' || $char == $'\n' || $char == $'\r' ]]; then
             break
         elif [[ $char == $'\177' || $char == $'\b' ]]; then  # Try '\b' for Backspace
@@ -116,9 +116,9 @@ pas() {
     teck=false
     while ! $teck; do
         if [ ${#poi} -gt 2 ];then
-            read -s -p "Please enter the value: " once
+            read -e  -s -p "Please enter the value: " once
             echo""
-            read -s -p "Please repeat it: " twice
+            read -e  -s -p "Please repeat it: " twice
             if [ "$once" == "$twice" ]; then
                 teck=true
                 eval "$1"="'$once'" 
@@ -126,9 +126,9 @@ pas() {
                 echo "The first input does not match the second. Try again."
             fi          
         else
-        read -s -p "Please enter the value: " once
+        read -e  -s -p "Please enter the value: " once
         echo""
-        read -s -p "Please repeat it: " twice
+        read -e  -s -p "Please repeat it: " twice
 
         if [ "$once" == "$twice" ]; then
             if [[ $(check_pass "$once") == "Password is strong." ]];then 
@@ -153,7 +153,7 @@ local port="$1"
 tef=false
 while ! $tef;do
     if [ ${#uio} -lt 1 ];then
-        read -p "Enter the Port: " p1
+        read -e  -p "Enter the Port: " p1
     else
         p1="$uio"
     fi
@@ -173,16 +173,16 @@ done
 }
 
 echo -n -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m): "
-read check
+read -e  check
 
 if [ $check == y ]; then echo "Ignore: We will proceed"; else echo "Rude: then please get the keyfile to disk";exit; fi;
 
 echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: "
-read SCONU
+read -e  SCONU
 
 
 echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: "
-read SCONI
+read -e  SCONI
 
 
 SSHCON="$SCONU@$SCONI"
@@ -198,7 +198,7 @@ echo ""
 
 
 echo -n -e "\n\e[96m\e[1m[*]\e[0m Please Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:"
-read pa
+read -e  pa
 
 for i in {1..3}; do
     if file $pa | grep -qiP "key"; then
@@ -206,7 +206,7 @@ for i in {1..3}; do
         break
     else
         echo -e "\nDoesn't look like a key file. PLEASE enter the correct path: "
-        read pa
+        read -e  pa
         if [ $i -eq 3 ]; then
             echo -e "Your three chances are gone\nExiting"
             exit
@@ -227,7 +227,7 @@ check_port PORT2
 #OPENVAS / GVM CONFIG
 
 echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: "
-read GVMUSER
+read -e  GVMUSER
 
 echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: "
 pas GVMPASWD
@@ -236,14 +236,14 @@ echo ""
 #EMAIL CONFIG
 
 echo -n -e "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: "
-read FROMAIL
+read -e  FROMAIL
 
 echo -n -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
 pas APPKEY 123
 echo ""
 
 echo -n -e "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
-read TOMAIL
+read -e  TOMAIL
 
 echo -n -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the current device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
 passwd
@@ -261,7 +261,7 @@ for ((i=0; i<len; i++)); do
 done
 
 echo -e  "\n\e[96m\e[1m[*]\e[0m Please check if all variables are correct. In case they are correct press \e[32my\e[0m else press \e[31mn\e[0m"
-read check 
+read -e  check 
 if [ $check == "y" ]; then
     echo -e "We proceed with the installation"
     #echo -e "SCONU=$SCONU\nSCONI=$SCONI\nSSHPASSWD=$SSHPASSWD\nPORT1=$PORT1\nPORT2=$PORT2\nGVMUSER=$GVMUSER\nGVMPASWD=$GVMPASWD\nFROMAIL=$FROMAIL\nAPPKEY=$APPKEY\nTOMAIL=$TOMAIL" > /root/scripts/envar.conf
@@ -276,9 +276,9 @@ else
             echo -e "${text[$i]} [***]"
             teck=false
                 while ! $teck; do
-                    read -s -p "Please enter the value: " once
+                    read -e  -s -p "Please enter the value: " once
                     if [ ${#once} -gt 1 ];then
-                        read -s -p "Please repeat it: " twice
+                        read -e  -s -p "Please repeat it: " twice
                         if [ "$once" == "$twice" ]; then
                             teck=true
                             echo -e "answer is changed\n"
@@ -293,7 +293,7 @@ else
                 done
         elif [[ "${an[$i]}" =~ "PORT" ]];then
             echo -e "${text[$i]} [${!an[$i]}]"
-            read -p "Enter the Port: " portint
+            read -e  -p "Enter the Port: " portint
             if [ "${portint}" -gt 0 ];then
                 check_port ${an[$i]} $portint
                 echo -e "answer is changed\n"
@@ -302,7 +302,7 @@ else
             fi
         else
             echo -e "${text[$i]} [${!an[$i]}]"
-            read inp
+            read -e  inp
             if [ ${#inp} -gt 1 ];then
                 #echo -e "answer is changed\n"
                 declare ${an[$i]}=$inp

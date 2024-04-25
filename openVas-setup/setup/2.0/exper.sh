@@ -143,16 +143,18 @@ pas() {
                     if [ "$once" == "${!i}" ];then
                         echo -e "Password/passphrase already in usage\t$i"
                         tteck=false
-                        break
                     fi
                 done
                 if [ $tteck == true ];then
                     teck=true
                     eval "$1"="'$once'"
                     echo -e "\n\e[92m\e[5m[*]OK\e[0m"
+                #else
+                    #echo -e "Password/passphrase already in usage\t$i"
                 fi
             else
-                echo -e "\nPassword to weak\t\n$(check_pass "$once")"
+                echo -e "\nPassword to weak"
+                break
             fi
             
         else

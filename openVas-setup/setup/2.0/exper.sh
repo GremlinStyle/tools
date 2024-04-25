@@ -240,8 +240,7 @@ echo -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email yo
 pas APPKEY 123
 echo ""
 
-read -ep $'\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
-read -ep "Input: "  TOMAIL
+read -ep $'\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: ' TOMAIL
 
 echo -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the current device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
 passwd
@@ -258,8 +257,7 @@ for ((i=0; i<len; i++)); do
     fi
 done
 
-echo -e  "\n\e[96m\e[1m[*]\e[0m Please check if all variables are correct. In case they are correct press \e[32my\e[0m else press \e[31mn\e[0m"
-read -ep "Input: "  check 
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please check if all variables are correct. In case they are correct press \e[32my\e[0m else press \e[31mn\e[0m: ' check 
 if [ $check == "y" ]; then
     echo -e "We proceed with the installation"
     #echo -e "SCONU=$SCONU\nSCONI=$SCONI\nSSHPASSWD=$SSHPASSWD\nPORT1=$PORT1\nPORT2=$PORT2\nGVMUSER=$GVMUSER\nGVMPASWD=$GVMPASWD\nFROMAIL=$FROMAIL\nAPPKEY=$APPKEY\nTOMAIL=$TOMAIL" > /root/scripts/envar.conf
@@ -299,8 +297,7 @@ else
                 echo -e "answer is unchanged\n"
             fi
         else
-            echo -e "${text[$i]} [${!an[$i]}]"
-            read -ep "Input: "  inp
+            read -ep "$(echo -e ${text[$i]} [${!an[$i]}])"  inp
             if [ ${#inp} -gt 1 ];then
                 #echo -e "answer is changed\n"
                 declare ${an[$i]}=$inp

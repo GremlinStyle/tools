@@ -176,17 +176,14 @@ while ! $tef;do
 done
 }
 
-echo -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m)"
-read -ep "Input: "  check
+read -ep $'\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m): ' check
 
 if [ $check == y ]; then echo "Ignore: We will proceed"; else echo "Rude: then please get the keyfile to disk";exit; fi;
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: "
-read -ep "Input: "  SCONU
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: ' SCONU
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: "
-read -ep "Input: "  SCONI
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: ' SCONI
 
 
 SSHCON="$SCONU@$SCONI"
@@ -201,8 +198,7 @@ pas SSHPASSWDS
 echo ""
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:"
-read -ep "Input: "  pa
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m: ' pa
 
 for i in {1..3}; do
     if file $pa | grep -qiP "key"; then
@@ -210,7 +206,7 @@ for i in {1..3}; do
         break
     else
         echo -e "\nDoesn't look like a key file. PLEASE enter the correct path: "
-        read -ep "Input: "  pa
+        read -ep "Path: "  pa
         if [ $i -eq 3 ]; then
             echo -e "Your three chances are gone\nExiting"
             exit
@@ -230,8 +226,7 @@ check_port PORT2
 
 #OPENVAS / GVM CONFIG
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: "
-read -ep "Input: "  GVMUSER
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: ' GVMUSER
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: "
 pas GVMPASWD
@@ -239,15 +234,13 @@ echo ""
 
 #EMAIL CONFIG
 
-echo -e "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: "
-read -ep "Input: "  FROMAIL
+read -ep $'\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: ' FROMAIL
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
 pas APPKEY 123
 echo ""
 
-echo -e "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
-read -ep "Input: "  TOMAIL
+read -ep $'\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: ' TOMAIL
 
 echo -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the current device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"
 passwd
@@ -264,11 +257,9 @@ for ((i=0; i<len; i++)); do
     fi
 done
 
-echo -e  "\n\e[96m\e[1m[*]\e[0m Please check if all variables are correct. In case they are correct press \e[32my\e[0m else press \e[31mn\e[0m"
-read -ep "Input: "  check 
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please check if all variables are correct. In case they are correct press \e[32my\e[0m else press \e[31mn\e[0m: ' check 
 if [ $check == "y" ]; then
     echo -e "We proceed with the installation"
-    #echo -e "SCONU=$SCONU\nSCONI=$SCONI\nSSHPASSWD=$SSHPASSWD\nPORT1=$PORT1\nPORT2=$PORT2\nGVMUSER=$GVMUSER\nGVMPASWD=$GVMPASWD\nFROMAIL=$FROMAIL\nAPPKEY=$APPKEY\nTOMAIL=$TOMAIL" > /root/scripts/envar.conf
     #echo "" > /root/scripts/envar.conf
     #for ((i=0; i<${#an[@]};i++));do echo "${an[$i]}=${!an[$i]}" >> /root/scripts/envar.conf; done
 else
@@ -291,8 +282,8 @@ else
                             echo "\nThe first input does not match the second. Try again."
                         fi
                     else
-                        break
                         echo -e "answer is unchanged\n"
+                        break
                     fi
                 done
         elif [[ "${an[$i]}" =~ "PORT" ]];then
@@ -305,7 +296,7 @@ else
                 echo -e "answer is unchanged\n"
             fi
         else
-            echo -e "${text[$i]} [${!an[$i]}]"
+            echo -e ${text[$i]} [${!an[$i]}]
             read -ep "Input: "  inp
             if [ ${#inp} -gt 1 ];then
                 #echo -e "answer is changed\n"
@@ -317,7 +308,6 @@ else
     done
     #echo "" > /root/scripts/envar.conf
     #for ((i=0; i<${#an[@]};i++));do echo "${an[$i]}=${!an[$i]}" >> /root/scripts/envar.conf; done
-    #echo -e "SCONU=$SCONU\nSCONI=$SCONI\nSSHPASSWD$SSHPASSWD\nPORT1=$PORT1\nPORT2=$PORT2\nGVMUSER=$GVMUSER\nGVMPASWD=$GVMPASWD\nFROMAIL=$FROMAIL\nAPPKEY=$APPKEY\nTOMAIL=$TOMAIL" > /root/scripts/envar.conf
 fi
 
 

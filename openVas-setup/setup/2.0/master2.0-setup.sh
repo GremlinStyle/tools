@@ -86,6 +86,7 @@ while ! $tef;do
     fi
 done
 }
+
 hidepas() {
     int=""
     while IFS= read -r -s -n1 char; do
@@ -103,8 +104,20 @@ hidepas() {
 }
 
 pas() {
+    poi="$2"
     teck=false
     while ! $teck; do
+        if [ ${#poi} -gt 2 ];then
+            echo -n "Please enter the value: ";hidepas;once=$int
+            echo ""
+            echo -n "Please repeat it: "; hidepas;twice=$int 
+            if [ "$once" == "$twice" ]; then
+                teck=true
+                eval "$1"="'$once'" 
+            else
+                echo "The first input does not match the second. Try again."
+            fi          
+        else
         echo -n "Please enter the value: ";hidepas;once=$int
         echo ""
         echo -n "Please repeat it: "; hidepas;twice=$int
@@ -121,6 +134,7 @@ pas() {
         else
             echo "The first input does not match the second. Try again."
         fi
+        fi
     done
 }
 
@@ -136,7 +150,7 @@ while ! $tef;do
     fi
     if (( $p1 >= 49152 && $p1 <= 65535 )); then
         eval "$port"="$p1"
-        if [ $PORT1 == $PORT2 ];then
+        if [ "$PORT1" == "$PORT2" ];then
             echo "first port and second port are the same which should not be"
             
         else
@@ -216,7 +230,7 @@ echo -e "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send report
 read FROMAIL
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
-pas APPKEY
+pas APPKEY 123
 echo ""
 
 echo -e "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
@@ -256,21 +270,21 @@ else
                     echo -n "Please enter the value: ";hidepas;once=$int
                     echo ""
                     if [ ${#once} -gt 1 ];then
-                    echo -n "Please repeat it: "; hidepas;twice=$int
+                        echo -n "Please repeat it: "; hidepas;twice=$int
 
-                    if [ "$once" == "$twice" ]; then
-                        teck=true
-                        echo -e "answer is changed\n"
-                        eval "${an[$i]}"="'$once'"
-                    else
-                        echo "\nThe first input does not match the second. Try again."
-                    fi
+                        if [ "$once" == "$twice" ]; then
+                            teck=true
+                            echo -e "answer is changed\n"
+                            eval "${an[$i]}"="'$once'"
+                        else
+                            echo "\nThe first input does not match the second. Try again."
+                        fi
                     else
                         break
                         echo -e "answer is unchanged\n"
                     fi
                 done
-        elif [[${an[$i]} =~ "PORT"]];then
+        elif [[ "${an[$i]}" =~ "PORT" ]];then
             echo -e "${text[$i]} [${!an[$i]}]"
             read -p "Enter the Port: " portint
             if [ ${portint} -gt 0 ];then
@@ -279,7 +293,6 @@ else
             else
                 echo -e "answer is unchanged\n"
             fi
-
         else
             echo -e "${text[$i]} [${!an[$i]}]"
             read inp

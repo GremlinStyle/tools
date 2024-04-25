@@ -238,7 +238,7 @@ pas SSHPASSWDS
 echo ""
 
 
-read -ep $'\n\e[96m\e[1m[*]\e[0m Please Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m: ' pa
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mmanagement server\e[0m: ' pa
 
 for i in {1..3}; do
     if file $pa | grep -qiP "key"; then
@@ -256,11 +256,11 @@ done
 
 #SSH config for tunnel:
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m (between 49152 and 65535) of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:"
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m (between 49152 and 65535) of the management server which will be used to tunnel \e[32mssh\e[0m to the management server for remote access indepedant of it's network properties:"
 check_port PORT1
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m (between 49152 and 65535) of the server which will be used to tunnel the \e[32mWebpage\e[0m to the server for accessing the webpage on the main server:"
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31msecond port\e[0m (between 49152 and 65535) of the management server which will be used to tunnel the \e[32mWebpage\e[0m to the management server for accessing the webpage on the management server:"
 check_port PORT2
 
 

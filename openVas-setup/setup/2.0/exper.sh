@@ -23,10 +23,6 @@ check_host() {
     done
 }
 
-# Usage example
-host="example.com"
-result=$(is_host_reachable "$host")
-echo "Host $host is reachable: $result"
 
 
 #Checks password matches password policy

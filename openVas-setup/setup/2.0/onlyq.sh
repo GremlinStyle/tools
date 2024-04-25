@@ -270,15 +270,15 @@ else
                     echo -n "Please enter the value: ";hidepas;once=$int
                     echo ""
                     if [ ${#once} -gt 1 ];then
-                    echo -n "Please repeat it: "; hidepas;twice=$int
+                        echo -n "Please repeat it: "; hidepas;twice=$int
 
-                    if [ "$once" == "$twice" ]; then
-                        teck=true
-                        echo -e "answer is changed\n"
-                        eval "${an[$i]}"="'$once'"
-                    else
-                        echo "\nThe first input does not match the second. Try again."
-                    fi
+                        if [ "$once" == "$twice" ]; then
+                            teck=true
+                            echo -e "answer is changed\n"
+                            eval "${an[$i]}"="'$once'"
+                        else
+                            echo "\nThe first input does not match the second. Try again."
+                        fi
                     else
                         break
                         echo -e "answer is unchanged\n"
@@ -293,7 +293,6 @@ else
             else
                 echo -e "answer is unchanged\n"
             fi
-
         else
             echo -e "${text[$i]} [${!an[$i]}]"
             read inp

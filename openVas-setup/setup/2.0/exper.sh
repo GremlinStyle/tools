@@ -295,7 +295,7 @@ else
             echo -e "${text[$i]} [${!an[$i]}]"
             read -e  -p "Enter the Port: " portint
             if [ "${#portint}" -gt 0 ];then
-                check_port ${an[$i]} $portint
+                check_port "${an[$i]}" "$portint"
                 echo -e "answer is changed\n"
             else
                 echo -e "answer is unchanged\n"

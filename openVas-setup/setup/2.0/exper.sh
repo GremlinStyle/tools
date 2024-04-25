@@ -146,7 +146,7 @@ pas() {
                         break
                     fi
                 done
-                if [ tteck == true ];then
+                if [ $tteck == true ];then
                     teck=true
                     eval "$1"="'$once'"
                     echo -e "\n\e[92m\e[5m[*]OK\e[0m"

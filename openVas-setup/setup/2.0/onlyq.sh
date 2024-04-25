@@ -117,6 +117,7 @@ pas() {
     while ! $teck; do
         if [ ${#poi} -gt 2 ];then
             read -s -p "Please enter the value: " once
+            echo""
             read -s -p "Please repeat it: " twice
             if [ "$once" == "$twice" ]; then
                 teck=true
@@ -126,6 +127,7 @@ pas() {
             fi          
         else
         read -s -p "Please enter the value: " once
+        echo""
         read -s -p "Please repeat it: " twice
 
         if [ "$once" == "$twice" ]; then
@@ -170,7 +172,7 @@ while ! $tef;do
 done
 }
 
-echo -n -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m)"
+echo -n -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m): "
 read check
 
 if [ $check == y ]; then echo "Ignore: We will proceed"; else echo "Rude: then please get the keyfile to disk";exit; fi;
@@ -185,12 +187,12 @@ read SCONI
 
 SSHCON="$SCONU@$SCONI"
 
-echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter a password for the ssh-key generation "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a password for the ssh-key generation "
 pas SSHPASSWD
 echo ""
 
 
-echo -n -e "\n\e[96m\e[1m[*]\e[0m Please enter the password of the server identity file "
+echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the password of the server identity file "
 pas SSHPASSWDS
 echo ""
 

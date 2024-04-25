@@ -310,3 +310,5 @@ else
 fi
 
 
+printenv
+for ((i=0; i<${#an[@]};i++));do echo "${an[$i]}=${!an[$i]}";done

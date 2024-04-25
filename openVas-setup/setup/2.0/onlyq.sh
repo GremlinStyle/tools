@@ -274,11 +274,9 @@ else
             echo -e "${text[$i]} [***]"
             teck=false
                 while ! $teck; do
-                    echo -n "Please enter the value: ";hidepas;once=$int
-                    echo ""
+                    read -s -p "Please enter the value: " once
                     if [ ${#once} -gt 1 ];then
-                        echo -n "Please repeat it: "; hidepas;twice=$int
-
+                        read -s -p "Please repeat it: " twice
                         if [ "$once" == "$twice" ]; then
                             teck=true
                             echo -e "answer is changed\n"
@@ -294,7 +292,7 @@ else
         elif [[ "${an[$i]}" =~ "PORT" ]];then
             echo -e "${text[$i]} [${!an[$i]}]"
             read -p "Enter the Port: " portint
-            if [ ${portint} -gt 0 ];then
+            if [ "${portint}" -gt 0 ];then
                 check_port ${an[$i]} $portint
                 echo -e "answer is changed\n"
             else

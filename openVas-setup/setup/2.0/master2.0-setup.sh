@@ -3,11 +3,13 @@
 text=( "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe username\e[0m of your managment server " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[33mthe hostname\e[0m of your managment server " "\n\e[96m\e[5m\e[1m[*]\e[0m password of the ssh-key generation " "\n\e[96m\e[5m\e[1m[*]\e[0m the password of the managment server identity file file " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mfirst port\e[0m of the managment server" "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31msecond port\e[0m of the managment server" "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31m Openvas username\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m \e[31mpassword\e[0m for the of Openvas user" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto send reports\e[0m " "\n\e[96m\e[5m\e[1m[*]\e[0m the \e[31mAppkey\e[0m of the email" "\n\e[96m\e[5m\e[1m[*]\e[0m the email used \e[33mto receive reports\e[0m ")
 an=(SCONU SCONI SSHPASSWD SSHPASSWDS PORT1 PORT2 GVMUSER GVMPASWD FROMAIL APPKEY TOMAIL)
 
+
+#Checks password matches password policy
 check_pass() {
     local password="$1"
 
     # Define criteria for a strong password
-    local min_length=8
+    local min_length=10
     local has_lowercase="[a-z]"
     local has_uppercase="[A-Z]"
     local has_digit="[0-9]"
@@ -44,6 +46,8 @@ check_pass() {
     return 0
 }
 
+#Check port but also compare entered Port to ports used on server
+#Is a not used Feature:
 check_port_new_need_some_working_on_due_sshkeygen_happening_later(){
 local uio="$2"
 local port="$1"
@@ -87,6 +91,8 @@ while ! $tef;do
 done
 }
 
+#In password fiel displays entered char with *
+#Not In Usage
 hidepas() {
     int=""
     while IFS= read -r -s -n1 char; do
@@ -103,14 +109,15 @@ hidepas() {
     echo
 }
 
+#pasword function: Ask for password two times, compaer first with second time, if true declare VarName=password
+#Special thing in case of APPKEY do not use password policy check 
 pas() {
     poi="$2"
     teck=false
     while ! $teck; do
         if [ ${#poi} -gt 2 ];then
-            echo -n "Please enter the value: ";hidepas;once=$int
-            echo ""
-            echo -n "Please repeat it: "; hidepas;twice=$int 
+            read -s -p "Please enter the value: " once
+            read -s -p "Please repeat it: " twice
             if [ "$once" == "$twice" ]; then
                 teck=true
                 eval "$1"="'$once'" 
@@ -118,9 +125,8 @@ pas() {
                 echo "The first input does not match the second. Try again."
             fi          
         else
-        echo -n "Please enter the value: ";hidepas;once=$int
-        echo ""
-        echo -n "Please repeat it: "; hidepas;twice=$int
+        read -s -p "Please enter the value: " once
+        read -s -p "Please repeat it: " twice
 
         if [ "$once" == "$twice" ]; then
             if [[ $(check_pass "$once") == "Password is strong." ]];then 
@@ -138,6 +144,7 @@ pas() {
     done
 }
 
+#compares PORT1 with PORT2 if they are the same and within range of 49152-65535
 check_port(){
 local uio="$2"
 local port="$1"
@@ -267,11 +274,9 @@ else
             echo -e "${text[$i]} [***]"
             teck=false
                 while ! $teck; do
-                    echo -n "Please enter the value: ";hidepas;once=$int
-                    echo ""
+                    read -s -p "Please enter the value: " once
                     if [ ${#once} -gt 1 ];then
-                        echo -n "Please repeat it: "; hidepas;twice=$int
-
+                        read -s -p "Please repeat it: " twice
                         if [ "$once" == "$twice" ]; then
                             teck=true
                             echo -e "answer is changed\n"
@@ -287,7 +292,7 @@ else
         elif [[ "${an[$i]}" =~ "PORT" ]];then
             echo -e "${text[$i]} [${!an[$i]}]"
             read -p "Enter the Port: " portint
-            if [ ${portint} -gt 0 ];then
+            if [ "${portint}" -gt 0 ];then
                 check_port ${an[$i]} $portint
                 echo -e "answer is changed\n"
             else

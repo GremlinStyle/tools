@@ -176,17 +176,14 @@ while ! $tef;do
 done
 }
 
-echo -e "\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m)"
-read -ep "Input: "  check
+read -ep $'\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of the main server first on disk before proceeding\n\tIs the identity file on this device? (\e[32my\e[0m/\e[31mn\e[0m): " check
 
 if [ $check == y ]; then echo "Ignore: We will proceed"; else echo "Rude: then please get the keyfile to disk";exit; fi;
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: "
-read -ep "Input: "  SCONU
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your server: ' SCONU
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: "
-read -ep "Input: "  SCONI
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname\e[0m of your server: ' SCONI
 
 
 SSHCON="$SCONU@$SCONI"
@@ -201,8 +198,7 @@ pas SSHPASSWDS
 echo ""
 
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m:"
-read -ep "Input: "  pa
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please Enter the \e[31mcomplete path\e[0m to the identity file of the \e[33mserver\e[0m: ' pa
 
 for i in {1..3}; do
     if file $pa | grep -qiP "key"; then
@@ -220,7 +216,7 @@ done
 
 #SSH config for tunnel:
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m (between 49152 and 65535) of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:"
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter the \e[31mfirst port\e[0m (between 49152 and 65535) of the server which will be used to tunnel \e[32mssh\e[0m to the server for remote access indepedant of it's network properties:"
 check_port PORT1
 
 
@@ -230,8 +226,7 @@ check_port PORT2
 
 #OPENVAS / GVM CONFIG
 
-echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: "
-read -ep "Input: "  GVMUSER
+read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter a name for the \e[31mnew Openvas user\e[0m: ' GVMUSER
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a \e[31mpassword\e[0m for the new Openvas user: "
 pas GVMPASWD
@@ -239,14 +234,13 @@ echo ""
 
 #EMAIL CONFIG
 
-echo -e "\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: "
-read -ep "Input: "  FROMAIL
+read -ep $'\n\e[96m\e[1m[*]\e[0m  Please enter the email used \e[33mto send reports\e[0m: ' FROMAIL
 
 echo -e "\n\e[96m\e[1m[*]\e[0m Please type the \e[31mAppkey\e[0m of the email you use to send reports: "
 pas APPKEY 123
 echo ""
 
-echo -e "\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
+read -ep $'\n\e[96m\e[1m[*]\e[0m  Please type the email used \e[33mto receive reports\e[0m: "
 read -ep "Input: "  TOMAIL
 
 echo -e "\n\e[96m\e[1m[*]\e[0m And for the last step change the \e[31mpassword of the current device user\e[0m to a more secure one\n\tIf you think it is \e[33msecure enough\e[0m please press \e[34mCTRL+D\e[0m to canel"

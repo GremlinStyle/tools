@@ -177,6 +177,7 @@ while ! $tef;do
     fi
     else
     echo "Input is not a number"
+    uio=""
     fi
 done
 }

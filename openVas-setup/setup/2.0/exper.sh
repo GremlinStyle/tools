@@ -11,7 +11,7 @@ an=(SCONU SCONI SSHPASSWD SSHPASSWDS PORT1 PORT2 GVMUSER GVMPASWD FROMAIL APPKEY
 check_host() {
     local host="$1"
     ck=false
-    while ! ck;do
+    while ! $ck;do
     # Ping the host with a single packet and suppress output
     if ping -c 1 -W 1 "$host" > /dev/null 2>&1; then
         ck=true
@@ -242,10 +242,10 @@ read -ep $'\e[96m\e[1m[*]\e[0m Please save the ssh \e[101midentity file\e[0m of 
 if [ $check == y ]; then echo "Ignore: We will proceed"; else echo "Rude: then please get the keyfile to disk";exit; fi;
 
 read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your management server: ' SCONU
-check_host $SCONU
+
 
 read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname or IP address\e[0m of your management server: ' SCONI
-
+check_host $SCONI
 
 SSHCON="$SCONU@$SCONI"
 

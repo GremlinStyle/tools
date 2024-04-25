@@ -155,12 +155,14 @@ check_port(){
 local uio="$2"
 local port="$1"
 tef=false
+re="^[0-9]+\$"
 while ! $tef;do
     if [ ${#uio} -lt 1 ];then
         read -e  -p "Enter the Port: " p1
     else
         p1="$uio"
     fi
+    if [[ $p1 =~ $re ]];then
     if (( $p1 >= 49152 && $p1 <= 65535 )); then
         eval "$port"="$p1"
         if [ "$PORT1" == "$PORT2" ];then
@@ -172,6 +174,9 @@ while ! $tef;do
     else
         uio=""
         echo "Entered Port is not within range"
+    fi
+    else
+    echo "Input is not a number"
     fi
 done
 }

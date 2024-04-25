@@ -206,7 +206,7 @@ for i in {1..3}; do
         break
     else
         echo -e "\nDoesn't look like a key file. PLEASE enter the correct path: "
-        read -ep "Input: "  pa
+        read -ep "Path: "  pa
         if [ $i -eq 3 ]; then
             echo -e "Your three chances are gone\nExiting"
             exit
@@ -283,8 +283,8 @@ else
                             echo "\nThe first input does not match the second. Try again."
                         fi
                     else
-                        break
                         echo -e "answer is unchanged\n"
+                        break
                     fi
                 done
         elif [[ "${an[$i]}" =~ "PORT" ]];then

@@ -141,7 +141,7 @@ pas() {
                 tteck=true
                 for i in ${tmp_list[@]};do
                     if [ "$once" == "${!i}" ];then
-                        echo -e "Password/passphrase already in usage\t$i"
+                        echo -e "Password/passphrase already in usage"
                         tteck=false
                     fi
                 done
@@ -149,8 +149,6 @@ pas() {
                     teck=true
                     eval "$1"="'$once'"
                     echo -e "\n\e[92m\e[5m[*]OK\e[0m"
-                #else
-                    #echo -e "Password/passphrase already in usage"
                 fi
             else
                 echo -e "\nPassword to weak"

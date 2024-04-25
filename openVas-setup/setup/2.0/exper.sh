@@ -178,6 +178,7 @@ while ! $tef;do
     if (( $p1 >= 49152 && $p1 <= 65535 )); then
         eval "$port"="$p1"
         if [ "$PORT1" == "$PORT2" ];then
+            uio=""
             echo "first port and second port are the same which should not be"
             
         else

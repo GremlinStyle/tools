@@ -16,7 +16,7 @@ check_host() {
     if ping -c 1 -W 1 "$host" > /dev/null 2>&1; then
         ck=true
         echo -e "\n\e[92m\e[5m[*]OK\e[0m"
-        eval "SCONU"="$host"
+        eval "SCONI"="$host"
     else
         read -ep "Host isn't reachable. Try again: " host
     fi

@@ -362,7 +362,7 @@ else
             fi
         else
             #$(echo -e ${text[$i]} [${!an[$i]}])
-            read -ep $(echo -e ${text[$i]} [${!an[$i]}]): "  inp
+            read -ep "$(echo -e ${text[$i]} [${!an[$i]}]): "  inp
             if [ ${#inp} -gt 1 ];then
                 #echo -e "answer is changed\n"
                 declare ${an[$i]}=$inp

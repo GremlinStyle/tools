@@ -246,6 +246,8 @@ check_host $SCONI "SCONI"
 
 SSHCON="$SCONU@$SCONI"
 
+export SSHCON="$SSHCON"
+
 echo -e "\n\e[96m\e[1m[*]\e[0m Please enter a passphrase for the ssh-key generation "
 pas SSHPASSWD
 echo ""

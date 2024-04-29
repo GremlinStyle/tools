@@ -10,13 +10,14 @@ an=(SCONU SCONI SSHPASSWD SSHPASSWDS PORT1 PORT2 GVMUSER GVMPASWD FROMAIL APPKEY
 # Function to check if a host is reachable
 check_host() {
     local host="$1"
+    local var="$2"
     ck=false
     while ! $ck;do
     # Ping the host with a single packet and suppress output
     if ping -c 1 -W 1 "$host" > /dev/null 2>&1; then
         ck=true
         echo -e "\n\e[92m\e[5m[*]OK\e[0m"
-        eval "SCONI"="$host"
+        eval "var"="$host"
     else
         read -ep "Host isn't reachable. Try again: " host
     fi
@@ -241,7 +242,7 @@ read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe username\e[0m of your ma
 
 
 read -ep $'\n\e[96m\e[1m[*]\e[0m Please enter \e[33mthe hostname or IP address\e[0m of your management server: ' SCONI
-check_host $SCONI
+check_host $SCONI "SCONI"
 
 SSHCON="$SCONU@$SCONI"
 

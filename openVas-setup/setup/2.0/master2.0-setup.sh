@@ -152,7 +152,7 @@ pas() {
                 fi
             else
                 echo -e "\nPassword to weak"
-                break
+                #break #Stops asking for strong password
             fi
             
         else

@@ -375,6 +375,8 @@ export FROMAIL=$FROMAIL
 export SSHPASSWD=$SSHPASSWD
 export SSHPASSWDS=$SSHPASSWDS
 
+chmod 700 $pa
+
 expect -c "
 # Set timeout to -1 to wait indefinitely
 set timeout -1

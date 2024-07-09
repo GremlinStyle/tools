@@ -29,7 +29,7 @@ getidbet() {
 	fi
 }
 saverp() { local line=$1; sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /var/run/gvmd/gvmd.sock --xml "<get_results  filter='apply_overrides=0 min_qod=70 task_id=$line rows=1000 first=1 sort-reverse=severity' />" > "$rep/$line"; }
-send() { local filese=$1; sendemail -f "$FROMAIL" -t "$TOMAIL" -u "Report from Minion: $(hostname)" -m "OpenVas report send: bonjur" -a "$filese" -s smtp.gmail.com -o tls=yes -xu "$FROMAIL" -xp "$APPKEY" && echo "email sended?" >> /root/scripts/log.master; }
+send() { local filese=$1; sendemail -f "$FROMAIL" -t "$TOMAIL" -u "Report from Minion: $(hostname)" -m "OpenVas report send: bonjur" -a "$filese.xml" -s smtp.gmail.com -o tls=yes -xu "$FROMAIL" -xp "$APPKEY" && echo "email sended?" >> /root/scripts/log.master; }
 
 ss() {
     local file=$1

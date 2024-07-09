@@ -6,11 +6,11 @@ echo "Sleeping: be sure openvas is already running when continueing" >> /root/sc
 sleep 180
 sudo chmod 662  /var/run/gvmd/gvmd.sock
 
-getid() { local file=$1;sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//task/@id' | uniq > "$file";}
+getid() { local file=$1;sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//report/@id' | uniq > "$file";}
 getidbet() {
 	local file=$1
 	idist=()
-	sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//task/@id' | uniq > /tmp/temp.ids
+	sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /run/gvmd/gvmd.sock --xml '<get_reports/>' | xmlstarlet sel -t -v '//report/@id' | uniq > /tmp/temp.ids
 	while read line; do idist+=("$line");done < /tmp/temp.ids
 	#make a list of states
 	staist=()
@@ -28,9 +28,9 @@ getidbet() {
 	echo "ERROR: List of tasks status does not mach the list of tasks ids in Length" >> /root/scripts/log.master
 	fi
 }
-saverp() { local line=$1; sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /var/run/gvmd/gvmd.sock --xml "<get_results  filter='apply_overrides=0 min_qod=70 task_id=$line rows=1000 first=1 sort-reverse=severity' />" > "$rep/$line"; }
-send() { local filese=$1; sendemail -f "$FROMAIL" -t "$TOMAIL" -u "Report from Minion: $(hostname)" -m "OpenVas report send: bonjur" -a "$filese.xml" -s smtp.gmail.com -o tls=yes -xu "$FROMAIL" -xp "$APPKEY" && echo "email sended?" >> /root/scripts/log.master; }
-
+saverp() { local line=$1; sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /var/run/gvmd/gvmd.sock --xml "<get_results  filter='apply_overrides=0 min_qod=70 report_id=$line rows=1000 first=1 sort-reverse=severity' />" > "$rep/$line.xml"; }
+send() { local filese=$1;local names=$2; sendemail -f "$FROMAIL" -t "$TOMAIL" -u "Report from Minion: $(hostname)" -m "OpenVas report send: $names" -a "$filese.xml" -s smtp.gmail.com -o tls=yes -xu "$FROMAIL" -xp "$APPKEY" && echo "email sended?" >> /root/scripts/log.master; }
+getname() { local taskid=$1; sudo -u worker gvm-cli --gmp-username $GVMUSER --gmp-password $GVMPASWD socket --socketpath /run/gvmd/gvmd.sock --xml "<get_reports/>" |  xmlstarlet sel -t -v '//report[@id="'$taskid'"]//task/name' | uniq; }
 ss() {
     local file=$1
     getid "$file"
@@ -38,8 +38,16 @@ ss() {
         echo "$line"
         saverp "$line"
         file2="$rep/$line"
-        send "$file2"
+		name=$(getname "$line")
+        echo "Task Id: "$line >> /root/scripts/log.master
+        echo "Task name:" $name >> /root/scripts/log.master
+        echo "File to send:" $file2 >> /root/scripts/log.master
+        send "$file2" "$name"
     done)
+	rm "$tmpids"
+	# Save "ids2" as "ids"
+	cp "$ids2" "$ids"
+	rm "$ids2"
 }
 
 echo "all functions in da hood" >> /root/scripts/log.master
@@ -59,7 +67,7 @@ echo "ante portas" >> /root/scripts/log.master
 	if [ -e $rep ]; then
 	echo "rep exist nothing to do" >> /root/scripts/log.master
 	else 
-	mkdir $rep
+	mkdir -p $rep
 	echo "rep created" >> /root/scripts/log.master
 	fi
 	
@@ -85,7 +93,16 @@ echo "ante portas" >> /root/scripts/log.master
 		echo "$line"
 		saverp "$line"
 		file2="$rep/$line"
-		send "$file2"
+		name=$(getname "$line")
+        echo "Task Id: "$line >> /root/scripts/log.master
+        echo "Task name:" $name >> /root/scripts/log.master
+        echo "File to send:" $file2 >> /root/scripts/log.master
+		if [ "${#name}" -le 3 ]; then 
+			echo "Leer SChuss" >> /root/scripts/log.master;
+		else
+			send "$file2" "$name"
+		fi  
+		
 	    	done)
 		# Add your code here...
 		
